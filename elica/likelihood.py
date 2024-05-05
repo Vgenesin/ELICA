@@ -47,6 +47,7 @@ class Elica(Likelihood):
     self.covariance
 
     self.inv_covariance = np.linalg.inv(self.covariance)
+    self.nval = self.nsims-(self.nsims)/2
 
     def get_requirements(self):
         return {'Cl': {'ee': self.lmin, self.lmax}}
@@ -65,10 +66,10 @@ class Elica(Likelihood):
             """Fixing the simulation with a different th smulation"""
             th=Clth[itau]+self.offset
 
-            for isim in range(self.nsims):
+            for isim in range(self.nval):
                 diag = (self.Cldata[isim,:]-self.bias+self.offset)/th
                 Xl = (self.fiducial+self.offset)*g(diag)
-                likeSH[isim,itau] = -nval/2*(1+np.dot(Xl,np.dot(self.inv_covariance,Xl))/(nval-1))
+                likeSH[isim,itau] = -self.nval/2*(1+np.dot(Xl,np.dot(self.inv_covariance,Xl))/(self.nval-1))
 
         return likeSH*(-0.5)
 
