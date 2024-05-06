@@ -46,11 +46,10 @@ class Elica(Likelihood):
     self.Cldata
     self.covariance
 
+    """ Fiducial spectra """
+    self.fiducial=np.tile(self.fiducial, self.nsp)
+    
     self.inv_covariance = np.linalg.inv(self.covariance)
-    self.nval = self.nsims-(self.nsims)/2
-
-    def get_requirements(self):
-        return {'Cl': {'ee': self.lmin, self.lmax}}
 
     def g(x):
         return np.sign(x) * np.sign(np.abs(x) - 1) * np.sqrt(2.0 * (np.abs(x) - np.log(np.abs(x)) - 1))
@@ -59,25 +58,14 @@ class Elica(Likelihood):
         """Clth are related to EE spectra that we get out of theory. The lenght of the array is defined by the number of the fields."""
         Clth = np.tile(cls_EE,self.nsp)
 
-        """ Fiducial spectra """
-        fid=np.tile(self.fiducial, self.nsp)
-
-        for itau in range(self.npar):
-            """Fixing the simulation with a different th smulation"""
-            th=Clth[itau]+self.offset
-
-            for isim in range(self.nval):
-                diag = (self.Cldata[isim,:]-self.bias+self.offset)/th
-                Xl = (self.fiducial+self.offset)*g(diag)
-                likeSH[isim,itau] = -self.nval/2*(1+np.dot(Xl,np.dot(self.inv_covariance,Xl))/(self.nval-1))
+        diag = (self.Cldata+self.offset)/th
+        Xl = (self.fiducial+self.offset)*g(diag)
+        likeSH = -self.nsims/2*(1+np.dot(Xl,np.dot(self.inv_covariance,Xl))/(self.nsims-1))
 
         return likeSH*(-0.5)
 
-
-        
-    
-        
-
+    def get_requirements(self):
+        return {'Cl': {'ee': self.lmin, self.lmax}}
 
     def logp(self, **params_values):
         cls = self.provider.get_Cl(ell_factor=True)['ee']
