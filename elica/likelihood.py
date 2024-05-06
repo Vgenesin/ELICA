@@ -30,7 +30,15 @@ class Elica(Likelihood):
     def __init__(
         self,
          : str = None,
-    ):
+    # 
+   
+        _cl_file = "/Users/valentinagenesini/Documents/GitHub/ELICA/data/100x143_100xWL_143xWL_dict.pickle"
+     with open(_cl_file, "rb") as pickle_file:
+            self.fiduCLS = pickle.load(pickle_file)
+    self.data = (
+            self.fiduCLS["ee"][self.lmin : self.lmax + 1])
+        :
+    
 
     self.lmin
     self.lmax
@@ -40,6 +48,7 @@ class Elica(Likelihood):
     self.offset
     self.fiducial
 
+    self.th
     self.Cldata
     self.covariance
 
@@ -48,11 +57,8 @@ class Elica(Likelihood):
     
     self.inv_covariance = np.linalg.inv(self.covariance)
     
-    """ file lettura pickle
-    def get_fiducial_spectra(self):
+   
 
-    with open(self.cl_file, "rb") as pickle_file:
-                return pickle.load(pickle_file)"""
 
     def g(x):
         return np.sign(x) * np.sign(np.abs(x) - 1) * np.sqrt(2.0 * (np.abs(x) - np.log(np.abs(x)) - 1))
@@ -61,7 +67,7 @@ class Elica(Likelihood):
         """Clth are related to EE spectra that we get out of theory. The lenght of the array is defined by the number of the fields."""
         Clth = np.tile(cls_EE,self.nsp)
 
-        diag = (self.Cldata+self.offset)/th
+        diag = (self.Cldata+self.offset)/self.th+self.offset
         Xl = (self.fiducial+self.offset)*g(diag)
         likeSH = -self.nsims/2*(1+np.dot(Xl,np.dot(self.inv_covariance,Xl))/(self.nsims-1))
 
