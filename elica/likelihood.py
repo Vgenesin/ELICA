@@ -64,10 +64,8 @@ class Elica(Likelihood):
         return np.sign(x) * np.sign(np.abs(x) - 1) * np.sqrt(2.0 * (np.abs(x) - np.log(np.abs(x)) - 1))
 
     def log_likelihood(self, cls_EE):
-        """Clth are related to EE spectra that we get out of theory. The lenght of the array is defined by the number of the fields."""
         Clth = np.tile(cls_EE,self.nsp)
-
-        diag = (self.Cldata+self.offset)/self.th+self.offset
+        diag = (self.Cldata+self.offset)/(self.th+self.offset)
         Xl = (self.fiducial+self.offset)*g(diag)
         likeSH = -self.nsims/2*(1+np.dot(Xl,np.dot(self.inv_covariance,Xl))/(self.nsims-1))
 
