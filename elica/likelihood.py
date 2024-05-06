@@ -17,8 +17,6 @@ class Elica(Likelihood):
             number of simulations. 
         nsp:
             number of fields in the analysis
-        npar:
-            number of theoretical spectra, i.e the number of spectra with different tau value
         offset:
             offset needed for the computation of the log likelihood (modification to H&L )
         fiducial:
@@ -38,7 +36,6 @@ class Elica(Likelihood):
     self.lmax
     self.nsims
     self.nsp
-    self.npar
 
     self.offset
     self.fiducial
@@ -50,6 +47,12 @@ class Elica(Likelihood):
     self.fiducial=np.tile(self.fiducial, self.nsp)
     
     self.inv_covariance = np.linalg.inv(self.covariance)
+    
+    """ file lettura pickle
+    def get_fiducial_spectra(self):
+
+    with open(self.cl_file, "rb") as pickle_file:
+                return pickle.load(pickle_file)"""
 
     def g(x):
         return np.sign(x) * np.sign(np.abs(x) - 1) * np.sqrt(2.0 * (np.abs(x) - np.log(np.abs(x)) - 1))
@@ -63,6 +66,7 @@ class Elica(Likelihood):
         likeSH = -self.nsims/2*(1+np.dot(Xl,np.dot(self.inv_covariance,Xl))/(self.nsims-1))
 
         return likeSH*(-0.5)
+
 
     def get_requirements(self):
         return {'Cl': {'ee': self.lmin, self.lmax}}
