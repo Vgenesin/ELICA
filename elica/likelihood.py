@@ -27,37 +27,30 @@ class Elica(Likelihood):
             Covariance matrix. 
 
     """
-    def __init__(
-        self,
-         : str = None,
-    # 
-   
-        _cl_file = "/Users/valentinagenesini/Documents/GitHub/ELICA/data/100x143_100xWL_143xWL_dict.pickle"
-     with open(_cl_file, "rb") as pickle_file:
-            self.fiduCLS = pickle.load(pickle_file)
-    self.data = (
-            self.fiduCLS["ee"][self.lmin : self.lmax + 1])
-        :
+
+
+    def __init__(self, fiduCLS):
+        self.lmin=fiduCLS.get('lmin')
+        self.lmax=fiduCLS.get('lmax')
+        self.nsims=fiduCLS.get('number_simulations')
+        self.nsp=fiduCLS.get('number_fields')
+
+        self.offset=fiduCLS.get('offset')
+        self.fiducial=fiduCLS.get('fiducial')
+
+        self.th=fiduCLS.get('theory')
+        self.Cldata=fiduCLS.get('Cl')
+        self.covariance=fiduCLS.get('Covariance_matrix')
+
+        self.inv_covariance = np.linalg.inv(self.covariance)  
+        """ Fiducial spectra """
+        self.fiducial=np.tile(self.fiducial, self.nsp) 
     
+    cl_file = "/Users/valentinagenesini/Documents/GitHub/ELICA/data/100x143_100xWL_143xWL_dict.pickle"
+    with open(_cl_file, "rb") as pickle_file:
+        self.fiduCLS = pickle.load(pickle_file)
 
-    self.lmin
-    self.lmax
-    self.nsims
-    self.nsp
-
-    self.offset
-    self.fiducial
-
-    self.th
-    self.Cldata
-    self.covariance
-
-    """ Fiducial spectra """
-    self.fiducial=np.tile(self.fiducial, self.nsp)
-    
-    self.inv_covariance = np.linalg.inv(self.covariance)
-    
-   
+"""my_instance = Elica(fiduCLS)"""
 
 
     def g(x):
