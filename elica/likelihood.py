@@ -20,13 +20,12 @@ class Elica(Likelihood):
             number of fields in the analysis
         offset:
             offset needed for the computation of the log likelihood (modification to H&L )
-        fiducial:
+        Clfiducial:
             fiducial spectra for the E mode analysis
         Cldata:
             Data from experiments or from simulations
-        Covariance:
-            Covariance matrix.
-
+        inv_cov:
+            inverse of covariance matrix.
     """
 
     def __init__(self, datafile):
@@ -35,17 +34,16 @@ class Elica(Likelihood):
 
         self.lmin = data.get("lmin")
         self.lmax = data.get("lmax")
+
         self.nsims = data.get("number_simulations")
         self.nsp = data.get("number_fields")
 
         self.offset = data.get("offset")
 
-        self.fiducial = np.tile(data.get("fiducial"), self.nsp) + self.offset
+        self.Clfiducial = np.tile(data.get("fiducial"), self.nsp) + self.offset
         self.Cldata = data.get("Cl") + self.offset
 
-        self.covariance = data.get("Covariance_matrix")
-
-        self.inv_covariance = np.linalg.inv(self.covariance)
+        self.inv_cov = np.linalg.inv(data.get("Covariance_matrix"))
 
     def g(x):
         return (
@@ -57,14 +55,14 @@ class Elica(Likelihood):
     def log_likelihood(self, cls_EE):
         Clth = np.tile(cls_EE, self.nsp) + self.offset
         diag = self.Cldata / Clth
-        Xl = self.fiducial * g(diag)
+        Xl = self.Clfiducial * g(diag)
         likeSH = (
             -self.nsims
             / 2
-            * (1 + np.dot(Xl, np.dot(self.inv_covariance, Xl)) / (self.nsims - 1))
+            * (1 + np.dot(Xl, np.dot(self.inv_cov, Xl)) / (self.nsims - 1))
         )
 
-        return likeSH * (-0.5)
+        return -0.5 * likeSH
 
     def get_requirements(self):
         return {'Cl': {'ee': self.lmin, self.lmax}}
