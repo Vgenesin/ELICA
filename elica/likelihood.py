@@ -38,10 +38,10 @@ class Elica(Likelihood):
         self.nsp=fiduCLS.get('number_fields')
 
         self.offset=fiduCLS.get('offset')
-        self.fiducial=fiduCLS.get('fiducial')
 
-        self.th=fiduCLS.get('theory')
-        self.Cldata=fiduCLS.get('Cl')
+        self.fiducial=np.tile(fiduCLS.get('fiducial'), self.nsp)+self.offset
+        self.Cldata=fiduCLS.get('Cl')+self.offset
+
         self.covariance=fiduCLS.get('Covariance_matrix')
 
         self.inv_covariance = np.linalg.inv(self.covariance)  
@@ -49,21 +49,16 @@ class Elica(Likelihood):
         self.fiducial=np.tile(self.fiducial, self.nsp) 
     
 
-
-"""my_instance = Elica(fiduCLS)"""
-
-
     def g(x):
         return np.sign(x) * np.sign(np.abs(x) - 1) * np.sqrt(2.0 * (np.abs(x) - np.log(np.abs(x)) - 1))
 
     def log_likelihood(self, cls_EE):
-        Clth = np.tile(cls_EE,self.nsp)
-        diag = (self.Cldata+self.offset)/(self.th+self.offset)
-        Xl = (self.fiducial+self.offset)*g(diag)
+        Clth = np.tile(cls_EE,self.nsp)+self.offset
+        diag = self.Cldata/Clth
+        Xl = self.fiducial*g(diag)
         likeSH = -self.nsims/2*(1+np.dot(Xl,np.dot(self.inv_covariance,Xl))/(self.nsims-1))
 
         return likeSH*(-0.5)
-
 
     def get_requirements(self):
         return {'Cl': {'ee': self.lmin, self.lmax}}
