@@ -29,20 +29,20 @@ class Elica(Likelihood):
     """
     cl_file = "/Users/valentinagenesini/Documents/GitHub/ELICA/data/100x143_100xWL_143xWL_dict.pickle"
     with open(_cl_file, "rb") as pickle_file:
-        self.fiduCLS= pickle.load(pickle_file)
+        self.data= pickle.load(pickle_file)
 
-    def __init__(self, fiduCLS):
-        self.lmin=fiduCLS.get('lmin')
-        self.lmax=fiduCLS.get('lmax')
-        self.nsims=fiduCLS.get('number_simulations')
-        self.nsp=fiduCLS.get('number_fields')
+    def __init__(self, data):
+        self.lmin=data.get('lmin')
+        self.lmax=data.get('lmax')
+        self.nsims=data.get('number_simulations')
+        self.nsp=data.get('number_fields')
 
-        self.offset=fiduCLS.get('offset')
+        self.offset=data.get('offset')
 
-        self.fiducial=np.tile(fiduCLS.get('fiducial'), self.nsp)+self.offset
-        self.Cldata=fiduCLS.get('Cl')+self.offset
+        self.fiducial=np.tile(data.get('fiducial'), self.nsp)+self.offset
+        self.Cldata=data.get('Cl')+self.offset
 
-        self.covariance=fiduCLS.get('Covariance_matrix')
+        self.covariance=data.get('Covariance_matrix')
 
         self.inv_covariance = np.linalg.inv(self.covariance)  
         """ Fiducial spectra """
