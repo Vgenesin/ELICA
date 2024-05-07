@@ -4,6 +4,7 @@ import pickle
 
 from cobaya.likelihood import Likelihood
 
+
 class Elica(Likelihood):
 
     """
@@ -13,8 +14,8 @@ class Elica(Likelihood):
             define the starting multipole of the fields.
         lmax:
             define the maximum multipole of the fields.
-        nsims: 
-            number of simulations. 
+        nsims:
+            number of simulations.
         nsp:
             number of fields in the analysis
         offset:
@@ -24,49 +25,50 @@ class Elica(Likelihood):
         Cldata:
             Data from experiments or from simulations
         Covariance:
-            Covariance matrix. 
+            Covariance matrix.
 
     """
-    cl_file = "/Users/valentinagenesini/Documents/GitHub/ELICA/data/100x143_100xWL_143xWL_dict.pickle"
-    with open(_cl_file, "rb") as pickle_file:
-        self.data= pickle.load(pickle_file)
 
-    def __init__(self, data):
-        self.lmin=data.get('lmin')
-        self.lmax=data.get('lmax')
-        self.nsims=data.get('number_simulations')
-        self.nsp=data.get('number_fields')
+    def __init__(self, datafile):
+        with open(datafile, "rb") as pickle_file:
+            data = pickle.load(pickle_file)
 
-        self.offset=data.get('offset')
+        self.lmin = data.get("lmin")
+        self.lmax = data.get("lmax")
+        self.nsims = data.get("number_simulations")
+        self.nsp = data.get("number_fields")
 
-        self.fiducial=np.tile(data.get('fiducial'), self.nsp)+self.offset
-        self.Cldata=data.get('Cl')+self.offset
+        self.offset = data.get("offset")
 
-        self.covariance=data.get('Covariance_matrix')
+        self.fiducial = np.tile(data.get("fiducial"), self.nsp) + self.offset
+        self.Cldata = data.get("Cl") + self.offset
 
-        self.inv_covariance = np.linalg.inv(self.covariance)  
-        """ Fiducial spectra """
-        self.fiducial=np.tile(self.fiducial, self.nsp) 
-    
+        self.covariance = data.get("Covariance_matrix")
+
+        self.inv_covariance = np.linalg.inv(self.covariance)
 
     def g(x):
-        return np.sign(x) * np.sign(np.abs(x) - 1) * np.sqrt(2.0 * (np.abs(x) - np.log(np.abs(x)) - 1))
+        return (
+            np.sign(x)
+            * np.sign(np.abs(x) - 1)
+            * np.sqrt(2.0 * (np.abs(x) - np.log(np.abs(x)) - 1))
+        )
 
     def log_likelihood(self, cls_EE):
-        Clth = np.tile(cls_EE,self.nsp)+self.offset
-        diag = self.Cldata/Clth
-        Xl = self.fiducial*g(diag)
-        likeSH = -self.nsims/2*(1+np.dot(Xl,np.dot(self.inv_covariance,Xl))/(self.nsims-1))
+        Clth = np.tile(cls_EE, self.nsp) + self.offset
+        diag = self.Cldata / Clth
+        Xl = self.fiducial * g(diag)
+        likeSH = (
+            -self.nsims
+            / 2
+            * (1 + np.dot(Xl, np.dot(self.inv_covariance, Xl)) / (self.nsims - 1))
+        )
 
-        return likeSH*(-0.5)
+        return likeSH * (-0.5)
 
     def get_requirements(self):
         return {'Cl': {'ee': self.lmin, self.lmax}}
 
     def logp(self, **params_values):
-        cls = self.provider.get_Cl(ell_factor=True)['ee']
+        cls = self.provider.get_Cl(ell_factor=True)["ee"]
         return self.log_likelihood(cls)
-
-
-
-
