@@ -27,7 +27,9 @@ class Elica(Likelihood):
             Covariance matrix. 
 
     """
-
+    cl_file = "/Users/valentinagenesini/Documents/GitHub/ELICA/data/100x143_100xWL_143xWL_dict.pickle"
+    with open(_cl_file, "rb") as pickle_file:
+        self.fiduCLS= pickle.load(pickle_file)
 
     def __init__(self, fiduCLS):
         self.lmin=fiduCLS.get('lmin')
@@ -46,9 +48,7 @@ class Elica(Likelihood):
         """ Fiducial spectra """
         self.fiducial=np.tile(self.fiducial, self.nsp) 
     
-    cl_file = "/Users/valentinagenesini/Documents/GitHub/ELICA/data/100x143_100xWL_143xWL_dict.pickle"
-    with open(_cl_file, "rb") as pickle_file:
-        self.fiduCLS = pickle.load(pickle_file)
+
 
 """my_instance = Elica(fiduCLS)"""
 
