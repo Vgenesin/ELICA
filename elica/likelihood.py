@@ -76,5 +76,9 @@ class Elica(Likelihood):
         return self.log_likelihood(cls)
 
 # An example of inheriting from the Elica class
-def Elica_100x143(Elica):
-    ...
+class Elica_100x143(Elica):
+    dataset = "example"
+    def __init__(self, datafile):
+        super().__init__(datafile)
+        self.lmin = 30
+        self.lmax = 2000
