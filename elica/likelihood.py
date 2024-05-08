@@ -8,23 +8,27 @@ from cobaya.likelihood import Likelihood
 class Elica(Likelihood):
 
     """
-    Defining the parameters needed in the likelihood:
+    Class defining the E-mode Likelihood with Cross-correlation Analysis (ELICA) likelihood. 
+    
+    This is meant to be the general-purpose likelihood containing the main computations. Then, specific likelihoods can be derived from this one by specifying the datafile.
 
-        lmin:
+    Parameters
+    ----------
+        lmin (int):
             define the starting multipole of the fields.
-        lmax:
+        lmax (int):
             define the maximum multipole of the fields.
-        nsims:
+        nsims (int):
             number of simulations.
-        nsp:
-            number of fields in the analysis
-        offset:
-            offset needed for the computation of the log likelihood (modification to H&L )
-        Clfiducial:
-            fiducial spectra for the E mode analysis
-        Cldata:
-            Data from experiments or from simulations
-        inv_cov:
+        nsp (int):
+            number of fields in the analysis.
+        offset (array_like):
+            offset needed for the computation of the log likelihood (modification to H&L).
+        Clfiducial (array_like):
+            fiducial spectra for the E mode analysis.
+        Cldata (array_like):
+            Data from experiments or from simulations.
+        inv_cov (array_like):
             inverse of covariance matrix.
     """
 
