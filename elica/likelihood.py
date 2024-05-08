@@ -65,7 +65,7 @@ class Elica(Likelihood):
         return -0.5 * likeSH
 
     def get_requirements(self):
-        return {'Cl': {'ee': self.lmin, self.lmax}}
+        return {'Cl': {'ee': {self.lmin, self.lmax}}}
 
     def logp(self, **params_values):
         cls = self.provider.get_Cl(ell_factor=True)["ee"]
