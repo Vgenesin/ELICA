@@ -74,3 +74,7 @@ class Elica(Likelihood):
     def logp(self, **params_values):
         cls = self.provider.get_Cl(ell_factor=True)["ee"]
         return self.log_likelihood(cls)
+
+# An example of inheriting from the Elica class
+def Elica_100x143(Elica):
+    ...
