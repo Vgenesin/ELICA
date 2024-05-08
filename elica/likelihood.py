@@ -1,7 +1,7 @@
 import os
-import numpy as np
 import pickle
 
+import numpy as np
 from cobaya.likelihood import Likelihood
 
 
@@ -59,7 +59,7 @@ class Elica(Likelihood):
     def log_likelihood(self, cls_EE):
         Clth = np.tile(cls_EE, self.nsp) + self.offset
         diag = self.Cldata / Clth
-        Xl = self.Clfiducial * g(diag)
+        Xl = self.Clfiducial * self.g(diag)
         likeSH = (
             -self.nsims
             / 2
@@ -82,3 +82,4 @@ class Elica_100x143(Elica):
         super().__init__(datafile)
         self.lmin = 30
         self.lmax = 2000
+    ...
