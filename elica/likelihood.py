@@ -1,30 +1,34 @@
 import os
-import numpy as np
 import pickle
 
+import numpy as np
 from cobaya.likelihood import Likelihood
 
 
 class Elica(Likelihood):
 
     """
-    Defining the parameters needed in the likelihood:
+    Class defining the E-mode Likelihood with Cross-correlation Analysis (ELICA) likelihood. 
+    
+    This is meant to be the general-purpose likelihood containing the main computations. Then, specific likelihoods can be derived from this one by specifying the datafile.
 
-        lmin:
+    Parameters
+    ----------
+        lmin (int):
             define the starting multipole of the fields.
-        lmax:
+        lmax (int):
             define the maximum multipole of the fields.
-        nsims:
+        nsims (int):
             number of simulations.
-        nsp:
-            number of fields in the analysis
-        offset:
-            offset needed for the computation of the log likelihood (modification to H&L )
-        Clfiducial:
-            fiducial spectra for the E mode analysis
-        Cldata:
-            Data from experiments or from simulations
-        inv_cov:
+        nsp (int):
+            number of fields in the analysis.
+        offset (array_like):
+            offset needed for the computation of the log likelihood (modification to H&L).
+        Clfiducial (array_like):
+            fiducial spectra for the E mode analysis.
+        Cldata (array_like):
+            Data from experiments or from simulations.
+        inv_cov (array_like):
             inverse of covariance matrix.
     """
 
@@ -55,7 +59,7 @@ class Elica(Likelihood):
     def log_likelihood(self, cls_EE):
         Clth = np.tile(cls_EE, self.nsp) + self.offset
         diag = self.Cldata / Clth
-        Xl = self.Clfiducial * g(diag)
+        Xl = self.Clfiducial * self.g(diag)
         likeSH = (
             -self.nsims
             / 2
@@ -65,8 +69,17 @@ class Elica(Likelihood):
         return -0.5 * likeSH
 
     def get_requirements(self):
-        return {'Cl': {'ee': self.lmin, self.lmax}}
+        return {'Cl': {'ee': self.lmax}}
 
     def logp(self, **params_values):
         cls = self.provider.get_Cl(ell_factor=True)["ee"]
         return self.log_likelihood(cls)
+
+# An example of inheriting from the Elica class
+class Elica_100x143(Elica):
+    dataset = "example"
+    def __init__(self, datafile):
+        super().__init__(datafile)
+        self.lmin = 30
+        self.lmax = 2000
+    ...
