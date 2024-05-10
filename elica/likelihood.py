@@ -6,10 +6,9 @@ from cobaya.likelihood import Likelihood
 
 
 class Elica(Likelihood):
-
     """
-    Class defining the E-mode Likelihood with Cross-correlation Analysis (ELICA) likelihood. 
-    
+    Abstract class defining the E-mode Likelihood with Cross-correlation Analysis (ELICA) likelihood.
+
     This is meant to be the general-purpose likelihood containing the main computations. Then, specific likelihoods can be derived from this one by specifying the datafile.
 
     Parameters
@@ -73,11 +72,17 @@ class Elica(Likelihood):
         cls = self.provider.get_Cl(ell_factor=True)["ee"][self.lmin : self.lmax + 1]
         return self.log_likelihood(cls)
 
-# An example of inheriting from the Elica class
-class Elica_100x143(Elica):
-    dataset = "example"
-    def __init__(self, datafile):
-        super().__init__(datafile)
-        self.lmin = 30
-        self.lmax = 2000
-    ...
+
+# Derivative classes (they need the .yaml file)
+
+
+class EE_100x143(Elica): ...
+
+
+class EE_100xWL(Elica): ...
+
+
+class EE_143xWL(Elica): ...
+
+
+class EE_WLxWL(Elica): ...
