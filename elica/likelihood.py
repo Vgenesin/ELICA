@@ -32,8 +32,9 @@ class Elica(Likelihood):
             inverse of covariance matrix.
     """
 
-    def __init__(self, datafile):
-        with open(datafile, "rb") as pickle_file:
+    def initialize(self):
+        # The datafile is read from the .yaml file
+        with open(self.datafile, "rb") as pickle_file:
             data = pickle.load(pickle_file)
 
         self.lmin = data.get("lmin")
@@ -66,7 +67,7 @@ class Elica(Likelihood):
         return -likeSH / 2
 
     def get_requirements(self):
-        return {'Cl': {'ee': self.lmax}}
+        return {"Cl": {"ee": self.lmax}}
 
     def logp(self, **params_values):
         cls = self.provider.get_Cl(ell_factor=True)["ee"][self.lmin : self.lmax + 1]
