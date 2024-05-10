@@ -1,9 +1,8 @@
-import numpy as np
-import pickle
 import time
-from mpi4py import MPI
-from cobaya.run import run
+
 from cobaya.log import LoggedError
+from cobaya.run import run
+from mpi4py import MPI
 
 from elica import EE_100x143
 
@@ -74,8 +73,6 @@ def test_simple_sampling():
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
 
-    start = time.time()
-
     success = False
     try:
         upd_info, mcmc = run(info)
@@ -88,13 +85,17 @@ def test_simple_sampling():
     if not success and rank == 0:
         print("Sampling failed!")
 
-    end = time.time()
-
-    print(f"******** ALL DONE IN {round(end-start, 2)} SECONDS! ********")
-
     return
 
 
 if __name__ == "__main__":
+    print("Running tests...")
     test_class_instance()
+    print("Class instance test passed.\n")
+
+    print("Running simple sampling test...")
+    start = time.time()
     test_simple_sampling()
+    end = time.time()
+
+    print(f"******** ALL DONE IN {round(end-start, 2)} SECONDS! ********")
