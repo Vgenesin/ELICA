@@ -49,7 +49,7 @@ class Elica(Likelihood):
 
         self.inv_cov = np.linalg.inv(data.get("Covariance_matrix"))
 
-    def g(x):
+    def g(self, x):
         return (
             np.sign(x)
             * np.sign(np.abs(x) - 1)
@@ -60,19 +60,16 @@ class Elica(Likelihood):
         Clth = np.tile(cls_EE, self.nsp) + self.offset
         diag = self.Cldata / Clth
         Xl = self.Clfiducial * self.g(diag)
-        likeSH = (
-            -self.nsims
-            / 2
-            * (1 + np.dot(Xl, np.dot(self.inv_cov, Xl)) / (self.nsims - 1))
+        likeSH = self.nsims * (
+            1 + np.dot(Xl, np.dot(self.inv_cov, Xl)) / (self.nsims - 1)
         )
-
-        return -0.5 * likeSH
+        return -likeSH / 2
 
     def get_requirements(self):
         return {'Cl': {'ee': self.lmax}}
 
     def logp(self, **params_values):
-        cls = self.provider.get_Cl(ell_factor=True)["ee"]
+        cls = self.provider.get_Cl(ell_factor=True)["ee"][self.lmin : self.lmax + 1]
         return self.log_likelihood(cls)
 
 # An example of inheriting from the Elica class
