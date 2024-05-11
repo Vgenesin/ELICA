@@ -1,12 +1,9 @@
-from __future__ import annotations
-
 import os
 
 from setuptools import setup
 
 file_dir = os.path.abspath(os.path.dirname(__file__))
 os.chdir(file_dir)
-
 
 setup(
     name="elica",
