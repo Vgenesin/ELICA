@@ -1,4 +1,3 @@
-import os
 import pickle
 
 import numpy as np
@@ -7,9 +6,12 @@ from cobaya.likelihood import Likelihood
 
 class Elica(Likelihood):
     """
-    Abstract class defining the E-mode Likelihood with Cross-correlation Analysis (ELICA) likelihood.
+    Abstract class defining the E-mode Likelihood with Cross-correlation
+    Analysis (ELICA) likelihood.
 
-    This is meant to be the general-purpose likelihood containing the main computations. Then, specific likelihoods can be derived from this one by specifying the datafile.
+    This is meant to be the general-purpose likelihood containing the main
+    computations. Then, specific likelihoods can be derived from this one
+    by specifying the datafile.
 
     Parameters
     ----------
@@ -22,7 +24,8 @@ class Elica(Likelihood):
         nsp (int):
             number of fields in the analysis.
         offset (array_like):
-            offset needed for the computation of the log likelihood (modification to H&L).
+            offset needed for the computation of the log likelihood
+            (modification to H&L).
         Clfiducial (array_like):
             fiducial spectra for the E mode analysis.
         Cldata (array_like):
@@ -86,3 +89,18 @@ class EE_143xWL(Elica): ...
 
 
 class EE_WLxWL(Elica): ...
+
+
+class EE_100x143_100xWL(Elica): ...
+
+
+class EE_100x143_143xWL(Elica): ...
+
+
+class EE_100x143_WLxWL(Elica): ...
+
+
+class EE_100x143_100xWL_143xWL(Elica): ...
+
+
+class EE_full(Elica): ...
