@@ -6,10 +6,9 @@ from cobaya.likelihood import Likelihood
 
 
 class Elica(Likelihood):
-
     """
-    Class defining the E-mode Likelihood with Cross-correlation Analysis (ELICA) likelihood. 
-    
+    Abstract class defining the E-mode Likelihood with Cross-correlation Analysis (ELICA) likelihood.
+
     This is meant to be the general-purpose likelihood containing the main computations. Then, specific likelihoods can be derived from this one by specifying the datafile.
 
     Parameters
@@ -32,8 +31,9 @@ class Elica(Likelihood):
             inverse of covariance matrix.
     """
 
-    def __init__(self, datafile):
-        with open(datafile, "rb") as pickle_file:
+    def initialize(self):
+        # The datafile is read from the .yaml file
+        with open(self.datafile, "rb") as pickle_file:
             data = pickle.load(pickle_file)
 
         self.lmin = data.get("lmin")
@@ -49,7 +49,7 @@ class Elica(Likelihood):
 
         self.inv_cov = np.linalg.inv(data.get("Covariance_matrix"))
 
-    def g(x):
+    def g(self, x):
         return (
             np.sign(x)
             * np.sign(np.abs(x) - 1)
@@ -60,26 +60,29 @@ class Elica(Likelihood):
         Clth = np.tile(cls_EE, self.nsp) + self.offset
         diag = self.Cldata / Clth
         Xl = self.Clfiducial * self.g(diag)
-        likeSH = (
-            -self.nsims
-            / 2
-            * (1 + np.dot(Xl, np.dot(self.inv_cov, Xl)) / (self.nsims - 1))
+        likeSH = self.nsims * (
+            1 + np.dot(Xl, np.dot(self.inv_cov, Xl)) / (self.nsims - 1)
         )
-
-        return -0.5 * likeSH
+        return -likeSH / 2
 
     def get_requirements(self):
-        return {'Cl': {'ee': self.lmax}}
+        return {"Cl": {"ee": self.lmax}}
 
     def logp(self, **params_values):
-        cls = self.provider.get_Cl(ell_factor=True)["ee"]
+        cls = self.provider.get_Cl(ell_factor=True)["ee"][self.lmin : self.lmax + 1]
         return self.log_likelihood(cls)
 
-# An example of inheriting from the Elica class
-class Elica_100x143(Elica):
-    dataset = "example"
-    def __init__(self, datafile):
-        super().__init__(datafile)
-        self.lmin = 30
-        self.lmax = 2000
-    ...
+
+# Derivative classes (they need the .yaml file)
+
+
+class EE_100x143(Elica): ...
+
+
+class EE_100xWL(Elica): ...
+
+
+class EE_143xWL(Elica): ...
+
+
+class EE_WLxWL(Elica): ...
