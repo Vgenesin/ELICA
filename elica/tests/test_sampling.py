@@ -1,12 +1,9 @@
-import time
-
 from cobaya.log import LoggedError
 from cobaya.run import run
 from mpi4py import MPI
 
 
 def test_simple_sampling(simple_info):
-
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
 
