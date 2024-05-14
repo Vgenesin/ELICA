@@ -1,0 +1,3 @@
+numpy
+cobaya
+mpi4py
