@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 from cobaya.model import get_model
 
 from elica import EE_100x143
@@ -15,10 +14,10 @@ def test_class_instance():
     assert likelihood._name == "elica.EE_100x143", f"_name = {likelihood._name}"
 
 
-@pytest.mark.xfail(reason="Probably the parameters are not exactly the same.")
 def test_log_likelihood(simple_info):
     model = get_model(simple_info)
     log_like = model.logposterior({"tau": 0.060}).loglikes[0]
+    expected = -260.95827562872205
     assert np.isclose(
-        log_like, -260.99, atol=1e-4
-    ), f"Obtained log-likelihood {log_like} != -260.99"
+        log_like, expected, atol=1e-4
+    ), f"Obtained log-likelihood {log_like} != {expected}"
