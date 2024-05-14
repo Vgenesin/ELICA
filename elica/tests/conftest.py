@@ -16,7 +16,7 @@ def simple_info():
             "latex": "\\tau_\\mathrm{reio}",
             "prior": {"max": 0.8, "min": 0.01},
             "proposal": 0.001,
-            "ref": {"dist": "norm", "loc": 0.060, "scale": 0.0005},
+            "ref": 0.060,
         },
     }
     info["output"] = ".test/test_simple_sampling"
@@ -33,16 +33,8 @@ def simple_info():
     info["theory"] = {
         "camb": {
             "extra_args": {
-                "bbn_predictor": "PArthENoPE_880.2_standard.dat",
-                # "halofit_version": "mead",
-                # "lens_potential_accuracy": 1,
-                # "NonLinear": "NonLinear_both",
-                "max_l": 2500,
-                "WantTransfer": True,
-                "Transfer.high_precision": True,
-                "num_nu_massless": 2.046,
-                # "share_delta_neff": True,
-                "YHe": 0.2454006,
+                "lens_potential_accuracy": 1,
+                "nnu": 3.044,
                 "num_massive_neutrinos": 1,
                 "theta_H0_range": [20, 100],
             }
@@ -98,7 +90,7 @@ def complete_info():
             "latex": "\\tau_\\mathrm{reio}",
             "prior": {"max": 0.8, "min": 0.01},
             "proposal": 0.003,
-            "ref": {"dist": "norm", "loc": 0.05430842, "scale": 0.0006},
+            "ref": 0.060,
         },
         "theta_MC_100": {
             "drop": True,
@@ -123,16 +115,8 @@ def complete_info():
     info["theory"] = {
         "camb": {
             "extra_args": {
-                "bbn_predictor": "PArthENoPE_880.2_standard.dat",
-                # "halofit_version": "mead",
-                # "lens_potential_accuracy": 1,
-                # "NonLinear": "NonLinear_both",
-                "max_l": 2500,
-                "WantTransfer": True,
-                "Transfer.high_precision": True,
-                "num_nu_massless": 2.046,
-                # "share_delta_neff": True,
-                "YHe": 0.2454006,
+                "lens_potential_accuracy": 1,
+                "nnu": 3.044,
                 "num_massive_neutrinos": 1,
                 "theta_H0_range": [20, 100],
             }
