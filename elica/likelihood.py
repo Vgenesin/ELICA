@@ -1,10 +1,10 @@
 import pickle
 
 import numpy as np
-from cobaya.likelihood import Likelihood
+from cobaya.likelihoods.base_classes import DataSetLikelihood
 
 
-class Elica(Likelihood):
+class Elica(DataSetLikelihood):
     """
     Abstract class defining the E-mode Likelihood with Cross-correlation
     Analysis (ELICA) likelihood.
