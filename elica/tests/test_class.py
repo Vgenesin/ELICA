@@ -19,5 +19,5 @@ def test_log_likelihood(simple_info):
     log_like = model.logposterior({"tau": 0.060}).loglikes[0]
     expected = -260.95827562872205
     assert np.isclose(
-        log_like, expected, atol=1e-4
+        log_like, expected, atol=1e-6
     ), f"Obtained log-likelihood {log_like} != {expected}"
