@@ -14,7 +14,7 @@ class Elica(DataSetLikelihood):
     computations. Then, specific likelihoods can be derived from this one
     by specifying the datafile.
 
-    Parameters
+    Attributes
     ----------
         lmin (int):
             define the starting multipole of the fields.
@@ -49,7 +49,7 @@ class Elica(DataSetLikelihood):
 
         self.check_equal_to_dict()
 
-    def check_equal_to_dict(self):
+    def check_equal_to_dict(self):  # TODO: eventually remove this method
         file_dir = os.path.abspath(os.path.dirname(__file__))
         self.dictionary_file = os.path.join(file_dir, self.dictionary_file)
         with open(self.dictionary_file, "rb") as pickle_file:
@@ -64,7 +64,7 @@ class Elica(DataSetLikelihood):
         assert np.allclose(data.get("Cl"), self.Cldata)
         assert np.allclose(data.get("Covariance_matrix"), self.inv_cov)
 
-    def dict_to_plain_data(self):
+    def dict_to_plain_data(self):  # TODO: eventually remove this method
         name_data = self._name.replace("elica.EE_", "")
         file_dir = os.path.abspath(os.path.dirname(__file__))
         self.dictionary_file = os.path.join(file_dir, self.dictionary_file)
