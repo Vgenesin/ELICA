@@ -64,8 +64,6 @@ class Elica(DataSetLikelihood):
         assert np.allclose(data.get("Cl"), self.Cldata)
         assert np.allclose(data.get("Covariance_matrix"), self.inv_cov)
 
-        exit()
-
     def dict_to_plain_data(self):
         name_data = self._name.replace("elica.EE_", "")
         file_dir = os.path.abspath(os.path.dirname(__file__))
