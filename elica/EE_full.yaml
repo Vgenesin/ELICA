@@ -1,1 +1,4 @@
-datafile: "elica/data/full_dict.pickle"
+path: null
+dataset_file: "data/full/params.dataset"
+
+dictionary_file: "data/full_dict.pickle"

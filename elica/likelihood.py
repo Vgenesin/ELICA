@@ -1,10 +1,11 @@
+import os
 import pickle
 
 import numpy as np
-from cobaya.likelihood import Likelihood
+from cobaya.likelihoods.base_classes import DataSetLikelihood
 
 
-class Elica(Likelihood):
+class Elica(DataSetLikelihood):
     """
     Abstract class defining the E-mode Likelihood with Cross-correlation
     Analysis (ELICA) likelihood.
@@ -13,7 +14,7 @@ class Elica(Likelihood):
     computations. Then, specific likelihoods can be derived from this one
     by specifying the datafile.
 
-    Parameters
+    Attributes
     ----------
         lmin (int):
             define the starting multipole of the fields.
@@ -34,23 +35,70 @@ class Elica(Likelihood):
             inverse of covariance matrix.
     """
 
-    def initialize(self):
-        # The datafile is read from the .yaml file
-        with open(self.datafile, "rb") as pickle_file:
+    install_options = {}
+
+    def init_params(self, ini):
+        self.lmin = ini.int("lmin")
+        self.lmax = ini.int("lmax")
+        self.nsims = ini.int("number_simulations")
+        self.nsp = ini.int("number_fields")
+        self.offset = np.loadtxt(ini.relativeFileName("offset_file"))
+        self.Clfiducial = np.loadtxt(ini.relativeFileName("fiducial_file"))
+        # TODO: check if this is correct:
+        self.Clfiducial = np.tile(self.Clfiducial, self.nsp)
+        self.Cldata = np.loadtxt(ini.relativeFileName("Cl_file"))
+        self.inv_cov = np.loadtxt(ini.relativeFileName("covariance_matrix_file"))
+
+        self.check_equal_to_dict()
+
+    def check_equal_to_dict(self):  # TODO: eventually remove this method
+        file_dir = os.path.abspath(os.path.dirname(__file__))
+        self.dictionary_file = os.path.join(file_dir, self.dictionary_file)
+        with open(self.dictionary_file, "rb") as pickle_file:
             data = pickle.load(pickle_file)
 
-        self.lmin = data.get("lmin")
-        self.lmax = data.get("lmax")
+        assert np.allclose(data.get("lmin"), self.lmin)
+        assert np.allclose(data.get("lmax"), self.lmax)
+        assert np.allclose(data.get("number_simulations"), self.nsims)
+        assert np.allclose(data.get("number_fields"), self.nsp)
+        assert np.allclose(data.get("offset"), self.offset)
+        assert np.allclose(np.tile(data.get("fiducial"), self.nsp), self.Clfiducial)
+        assert np.allclose(data.get("Cl"), self.Cldata)
+        assert np.allclose(data.get("Covariance_matrix"), self.inv_cov)
 
-        self.nsims = data.get("number_simulations")
-        self.nsp = data.get("number_fields")
+    def dict_to_plain_data(self):  # TODO: eventually remove this method
+        name_data = self._name.replace("elica.EE_", "")
+        file_dir = os.path.abspath(os.path.dirname(__file__))
+        self.dictionary_file = os.path.join(file_dir, self.dictionary_file)
+        with open(self.dictionary_file, "rb") as pickle_file:
+            data = pickle.load(pickle_file)
 
-        self.offset = data.get("offset")
+        folder = os.path.join(file_dir, f"data/{name_data}")
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        file = os.path.join(file_dir, f"data/{name_data}/params.dataset")
+        with open(file, "w") as f:
+            f.write(f"lmin={data.get('lmin')}\n")
+            f.write(f"lmax={data.get('lmax')}\n")
+            f.write(f"number_simulations={data.get('number_simulations')}\n")
+            f.write(f"number_fields={data.get('number_fields')}\n\n")
 
-        self.Clfiducial = np.tile(data.get("fiducial"), self.nsp) + self.offset
-        self.Cldata = data.get("Cl") + self.offset
+            f.write("offset_file=offset.dat\n\n")
+            f.write("fiducial_file=fiducial.dat\n\n")
+            f.write("Cl_file=Cl.dat\n\n")
+            f.write("covariance_matrix_file=covariance_matrix.dat\n\n")
 
-        self.inv_cov = np.linalg.inv(data.get("Covariance_matrix"))
+        file = os.path.join(file_dir, f"data/{name_data}/offset.dat")
+        np.savetxt(file, data.get("offset"))
+
+        file = os.path.join(file_dir, f"data/{name_data}/fiducial.dat")
+        np.savetxt(file, data.get("fiducial"))
+
+        file = os.path.join(file_dir, f"data/{name_data}/Cl.dat")
+        np.savetxt(file, data.get("Cl"))
+
+        file = os.path.join(file_dir, f"data/{name_data}/covariance_matrix.dat")
+        np.savetxt(file, data.get("Covariance_matrix"))
 
     def g(self, x):
         return (

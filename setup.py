@@ -22,4 +22,5 @@ setup(
     },
     install_requires=["cobaya", "numpy", "scipy"],
     test_suite="elica.tests",
+    tests_require=["camb", "pytest"],
 )

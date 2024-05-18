@@ -1,1 +1,4 @@
-datafile: "elica/data/100x143_dict.pickle"
+path: null
+dataset_file: "data/100x143/params.dataset"
+
+dictionary_file: "data/100x143_dict.pickle"

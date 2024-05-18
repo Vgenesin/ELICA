@@ -1,1 +1,4 @@
-datafile: "elica/data/100xWL_dict.pickle"
+path: null
+dataset_file: "data/100xWL/params.dataset"
+
+dictionary_file: "data/100xWL_dict.pickle"
