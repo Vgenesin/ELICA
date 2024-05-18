@@ -2,8 +2,10 @@ from cobaya.log import LoggedError
 from cobaya.run import run
 from mpi4py import MPI
 
+data = "100x143_100xWL_143xWL"
+
 info = {}
-info["likelihood"] = {"elica.EE_100x143": None}
+info["likelihood"] = {f"elica.EE_{data}": None}
 info["params"] = {
     "As": {"value": "lambda tau:  1.884e-09*np.exp(2*tau)"},
     "H0": 67.32,
@@ -19,7 +21,7 @@ info["params"] = {
         # "ref": 0.060,
     },
 }
-info["output"] = ".test/EE_100x143"
+info["output"] = f".test/EE_{data}"
 info["force"] = True
 info["resume"] = False
 info["debug"] = False
