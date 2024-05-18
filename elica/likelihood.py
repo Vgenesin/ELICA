@@ -42,12 +42,17 @@ class Elica(DataSetLikelihood):
         self.lmax = ini.int("lmax")
         self.nsims = ini.int("number_simulations")
         self.nsp = ini.int("number_fields")
+
         self.offset = np.loadtxt(ini.relativeFileName("offset_file"))
+
         self.Clfiducial = np.loadtxt(ini.relativeFileName("fiducial_file"))
-        # TODO: check if this is correct:
-        self.Clfiducial = np.tile(self.Clfiducial, self.nsp)
-        self.Cldata = np.loadtxt(ini.relativeFileName("Cl_file"))
-        self.inv_cov = np.loadtxt(ini.relativeFileName("covariance_matrix_file"))
+        self.Clfiducial = np.tile(self.Clfiducial, self.nsp) + self.offset
+
+        self.Cldata = np.loadtxt(ini.relativeFileName("Cl_file")) + self.offset
+
+        self.inv_cov = np.linalg.inv(
+            np.loadtxt(ini.relativeFileName("covariance_matrix_file"))
+        )
 
         self.check_equal_to_dict()
 
@@ -61,10 +66,16 @@ class Elica(DataSetLikelihood):
         assert np.allclose(data.get("lmax"), self.lmax)
         assert np.allclose(data.get("number_simulations"), self.nsims)
         assert np.allclose(data.get("number_fields"), self.nsp)
+
         assert np.allclose(data.get("offset"), self.offset)
-        assert np.allclose(np.tile(data.get("fiducial"), self.nsp), self.Clfiducial)
-        assert np.allclose(data.get("Cl"), self.Cldata)
-        assert np.allclose(data.get("Covariance_matrix"), self.inv_cov)
+
+        assert np.allclose(
+            np.tile(data.get("fiducial"), self.nsp) + self.offset, self.Clfiducial
+        )
+
+        assert np.allclose(data.get("Cl") + self.offset, self.Cldata)
+
+        assert np.allclose(np.linalg.inv(data.get("Covariance_matrix")), self.inv_cov)
 
     def dict_to_plain_data(self):  # TODO: eventually remove this method
         name_data = self._name.replace("elica.EE_", "")
