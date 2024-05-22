@@ -122,7 +122,7 @@ class Elica(DataSetLikelihood):
         Clth = np.tile(cls_EE, self.nsp) + self.offset
         diag = self.Cldata / Clth
         Xl = self.Clfiducial * self.g(diag)
-        likeSH = self.nsims * (
+        likeSH = self.nsims * np.log(
             1 + np.dot(Xl, np.dot(self.inv_cov, Xl)) / (self.nsims - 1)
         )
         return -likeSH / 2
