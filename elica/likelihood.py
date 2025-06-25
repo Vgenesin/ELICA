@@ -98,12 +98,11 @@ class Elica(DataSetLikelihood):
         file = os.path.join(file_dir, f"data/{name_data}/noise_bias.dat")
         np.savetxt(file, data.get("noise_bias"))
 
-    def g(self, x):
-        return (
-            np.sign(x)
-            * np.sign(np.abs(x) - 1)
-            * np.sqrt(2.0 * (np.abs(x) - np.log(np.abs(x)) - 1))
-        )
+    def ghl(self,x):
+        return np.sign(x - 1) * np.sqrt(2.0 * (x - np.log(x) - 1))
+
+    def glolli(self, x):
+        return np.sign(x) * self.ghl(np.abs(x))
 
     def log_likelihood(self, cls_EE):
         Clth = np.tile(cls_EE, self.nsp) + self.offset
