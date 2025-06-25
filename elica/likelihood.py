@@ -103,15 +103,14 @@ class Elica(DataSetLikelihood):
 
     def glolli(self, x):
         return np.sign(x) * self.ghl(np.abs(x))
-
+    
     def log_likelihood(self, cls_EE):
-        Clth = np.tile(cls_EE, self.nsp) + self.offset
-        diag = self.Cldata / Clth
-        Xl = self.Clfiducial * self.g(diag)
-        likeSH = self.nsims * np.log(
-            1 + np.dot(Xl, np.dot(self.inv_cov, Xl)) / (self.nsims - 1)
-        )
-        return -likeSH / 2
+        X = (self.Clfiducial+ self.noise_bias + self.offset) * self.glolli((self.Cldata + self.offset) / (cls_EE +self.noise_bias+ self.offset))
+        chi2 = np.dot(X, np.dot(self.inv_cov, X))
+        # if N_cov is not None:
+            # chi2 = -2 * np.log((1 + chi2 / (N_cov - 1)) ** (-N_cov / 2))
+        return -chi2/2
+
 
     def get_requirements(self):
         return {"Cl": {"ee": 1000}}
@@ -127,10 +126,10 @@ class Elica(DataSetLikelihood):
 class EE_100x143(Elica): ...
 
 
-# class EE_100xWL(Elica): ...
+class EE_100xWL(Elica): ...
 
 
-# class EE_143xWL(Elica): ...
+class EE_143xWL(Elica): ...
 
 
 class EE_WLxWL(Elica): ...
