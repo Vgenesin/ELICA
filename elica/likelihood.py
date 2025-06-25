@@ -62,7 +62,7 @@ class Elica(DataSetLikelihood):
         assert np.allclose(data.get("offset"), self.offset)
         assert np.allclose(data.get("fiducial"), self.Clfiducial)
         assert np.allclose(data.get("Cl") , self.Cldata)
-        assert np.allclose(data.get("Covariance_matrix"), self.inv_cov)
+        assert np.allclose(data.get("inv_covariance_matrix"), self.inv_cov)
         assert np.allclose(data.get("noise_bias"), self.noise_bias)
 
     def dict_to_plain_data(self):  # TODO: eventually remove this method
@@ -85,19 +85,18 @@ class Elica(DataSetLikelihood):
             f.write("offset_file=offset.dat\n\n")
             f.write("fiducial_file=fiducial.dat\n\n")
             f.write("Cl_file=Cl.dat\n\n")
-            f.write("covariance_matrix_file=covariance_matrix.dat\n\n")
+            f.write("inv_covariance_matrix_file=inv_covariance_matrix.dat\n\n")
 
         file = os.path.join(file_dir, f"data/{name_data}/offset.dat")
         np.savetxt(file, data.get("offset"))
-
         file = os.path.join(file_dir, f"data/{name_data}/fiducial.dat")
         np.savetxt(file, data.get("fiducial"))
-
         file = os.path.join(file_dir, f"data/{name_data}/Cl.dat")
         np.savetxt(file, data.get("Cl"))
-
-        file = os.path.join(file_dir, f"data/{name_data}/covariance_matrix.dat")
-        np.savetxt(file, data.get("Covariance_matrix"))
+        file = os.path.join(file_dir, f"data/{name_data}/inv_covariance_matrix.dat")
+        np.savetxt(file, data.get("inv_covariance_matrix"))
+        file = os.path.join(file_dir, f"data/{name_data}/noise_bias.dat")
+        np.savetxt(file, data.get("noise_bias"))
 
     def g(self, x):
         return (
