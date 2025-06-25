@@ -44,7 +44,6 @@ class Elica(DataSetLikelihood):
         self.nsp = ini.int("number_fields")
         self.offset = np.loadtxt(ini.relativeFileName("offset_file"))
         self.Clfiducial = np.loadtxt(ini.relativeFileName("fiducial_file"))
-        self.Cldata = np.loadtxt(ini.relativeFileName("Cl_file")) + self.offset
         self.Cldata = np.loadtxt(ini.relativeFileName("Cl_file")) 
         self.inv_cov = np.loadtxt(ini.relativeFileName("inv_covariance_matrix_file"))
         self.noise_bias = np.loadtxt(ini.relativeFileName("noise_bias_file"))
