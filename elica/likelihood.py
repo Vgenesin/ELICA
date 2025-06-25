@@ -42,17 +42,12 @@ class Elica(DataSetLikelihood):
         self.lmax = ini.int("lmax")
         self.nsims = ini.int("number_simulations")
         self.nsp = ini.int("number_fields")
-
         self.offset = np.loadtxt(ini.relativeFileName("offset_file"))
-
         self.Clfiducial = np.loadtxt(ini.relativeFileName("fiducial_file"))
-        self.Clfiducial = np.tile(self.Clfiducial, self.nsp) + self.offset
-
         self.Cldata = np.loadtxt(ini.relativeFileName("Cl_file")) + self.offset
-
-        self.inv_cov = np.linalg.inv(
-            np.loadtxt(ini.relativeFileName("covariance_matrix_file"))
-        )
+        self.Cldata = np.loadtxt(ini.relativeFileName("Cl_file")) 
+        self.inv_cov = np.loadtxt(ini.relativeFileName("inv_covariance_matrix_file"))
+        self.noise_bias = np.loadtxt(ini.relativeFileName("noise_bias_file"))
 
         self.check_equal_to_dict()
 
@@ -144,7 +139,7 @@ class EE_100x143(Elica): ...
 # class EE_100xWL(Elica): ...
 
 
-class EE_143xWL(Elica): ...
+# class EE_143xWL(Elica): ...
 
 
 class EE_WLxWL(Elica): ...
