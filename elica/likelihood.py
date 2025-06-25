@@ -55,21 +55,15 @@ class Elica(DataSetLikelihood):
         self.dictionary_file = os.path.join(file_dir, self.dictionary_file)
         with open(self.dictionary_file, "rb") as pickle_file:
             data = pickle.load(pickle_file)
-
         assert np.allclose(data.get("lmin"), self.lmin)
         assert np.allclose(data.get("lmax"), self.lmax)
         assert np.allclose(data.get("number_simulations"), self.nsims)
         assert np.allclose(data.get("number_fields"), self.nsp)
-
         assert np.allclose(data.get("offset"), self.offset)
-
-        assert np.allclose(
-            np.tile(data.get("fiducial"), self.nsp) + self.offset, self.Clfiducial
-        )
-
-        assert np.allclose(data.get("Cl") + self.offset, self.Cldata)
-
-        assert np.allclose(np.linalg.inv(data.get("Covariance_matrix")), self.inv_cov)
+        assert np.allclose(data.get("fiducial"), self.Clfiducial)
+        assert np.allclose(data.get("Cl") , self.Cldata)
+        assert np.allclose(data.get("Covariance_matrix"), self.inv_cov)
+        assert np.allclose(data.get("noise_bias"), self.noise_bias)
 
     def dict_to_plain_data(self):  # TODO: eventually remove this method
         name_data = self._name.replace("elica.EE_", "")
