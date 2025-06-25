@@ -1,5 +1,5 @@
 lmin=2
-lmax=29
+lmax=30
 number_simulations=500
 number_fields=1
 
@@ -9,5 +9,6 @@ fiducial_file=fiducial.dat
 
 Cl_file=Cl.dat
 
-covariance_matrix_file=covariance_matrix.dat
+inv_covariance_matrix_file=inv_covariance_matrix.dat
 
+noise_bias_file=noise_bias.dat
