@@ -105,18 +105,17 @@ class Elica(DataSetLikelihood):
         return np.sign(x) * self.ghl(np.abs(x))
     
     def log_likelihood(self, cls_EE):
-        X = (self.Clfiducial+ self.noise_bias + self.offset) * self.glolli((self.Cldata + self.offset) / (cls_EE +self.noise_bias+ self.offset))
+        X = (self.Clfiducial +self.noise_bias + self.offset) * self.glolli((self.Cldata + self.offset) / (cls_EE +self.noise_bias+ self.offset))
         chi2 = np.dot(X, np.dot(self.inv_cov, X))
-        # if N_cov is not None:
-            # chi2 = -2 * np.log((1 + chi2 / (N_cov - 1)) ** (-N_cov / 2))
-        return -chi2/2
+        chi2 = self.nsims * np.log((1 + chi2 / (self.nsims - 1)))
+        return -chi2*0.5
 
 
     def get_requirements(self):
         return {"Cl": {"ee": 1000}}
 
     def logp(self, **params_values):
-        cls = self.provider.get_Cl(ell_factor=True)["ee"][self.lmin : self.lmax + 1]
+        cls = self.provider.get_Cl(ell_factor=True )["ee"][self.lmin : self.lmax + 1]
         return self.log_likelihood(cls)
 
 
