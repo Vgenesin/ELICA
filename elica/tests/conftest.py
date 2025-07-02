@@ -6,7 +6,8 @@ def simple_info():
     info = {}
     info["likelihood"] = {"elica.EE_WLxWL": None}
     info["params"] = {
-        "As": {"value": "lambda tau:  1.884e-09*np.exp(2*tau)"},
+        # "As": {"value": "lambda tau:  1.884e-09*np.exp(2*tau)"},
+        "As": {"latex": "A_\\mathrm{s}", "value": "lambda logA: 1e-10*np.exp(logA)"},
         "H0": 67.32,
         "mnu": 0.06,
         "ns": 0.9651,
@@ -18,6 +19,13 @@ def simple_info():
             "proposal": 0.001,
             "ref": 0.060,
         },
+        "logA": {
+            "drop": True,
+            "latex": "\\log(10^{10} A_\\mathrm{s})",
+            "prior": {"max": 3.91, "min": 2.61},
+            "proposal": 0.001,
+            "ref": {"dist": "norm", "loc": 3.054, "scale": 0.0001},
+        },
     }
     info["output"] = ".test/test_simple_sampling"
     info["force"] = True
@@ -27,7 +35,7 @@ def simple_info():
         "mcmc": {
             "max_tries": 1000,
             "Rminus1_stop": 0.001,
-            "max_samples": 10,
+            "max_samples": 100,
         }
     }
     info["theory"] = {
