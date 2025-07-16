@@ -9,6 +9,7 @@ from .likelihood import (
     EE_full,
     EE_WLxWL,
 )
+from .likelihood import mHL
 
 __all__ = [
     "EE_100x143",
@@ -20,4 +21,7 @@ __all__ = [
     "EE_100x143_WLxWL",
     "EE_100x143_100xWL_143xWL",
     "EE_full",
+    "mHL",
+
 ]
+
