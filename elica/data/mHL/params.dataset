@@ -1,0 +1,16 @@
+lmin=2
+lmax=30
+number_simulations=500
+number_fields=3
+
+offset_file=offset.dat
+
+fiducial_file=fiducial.dat
+
+Cl_file=Cl.dat
+
+inv_covariance_matrix_file=inv_covariance_matrix.dat
+
+noise_bias_file=noise_bias.dat
+
+clth_file=Clth.dat
