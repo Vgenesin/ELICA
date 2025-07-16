@@ -4,7 +4,7 @@ import pytest
 @pytest.fixture
 def simple_info():
     info = {}
-    info["likelihood"] = {"elica.EE_WLxWL": None}
+    info["likelihood"] = {"elica.EE_100x143": None}
     info["params"] = {
         # "As": {"value": "lambda tau:  1.884e-09*np.exp(2*tau)"},
         "As": {"latex": "A_\\mathrm{s}", "value": "lambda logA: 1e-10*np.exp(logA)"},
@@ -19,15 +19,16 @@ def simple_info():
             "proposal": 0.001,
             "ref": 0.060,
         },
-        "logA": {
-            "drop": True,
-            "latex": "\\log(10^{10} A_\\mathrm{s})",
-            "prior": {"max": 3.91, "min": 2.61},
-            "proposal": 0.001,
-            "ref": {"dist": "norm", "loc": 3.054, "scale": 0.0001},
-        },
+        "logA": 3.054,
+        # "logA": {
+        #     "drop": True,
+        #     "latex": "\\log(10^{10} A_\\mathrm{s})",
+        #     "prior": {"max": 3.91, "min": 2.61},
+        #     "proposal": 0.001,
+        #     "ref": {"dist": "norm", "loc": 3.054, "scale": 0.0001},
+        # },
     }
-    info["output"] = ".test/test_simple_sampling"
+    info["output"] = ".test/test_simple_sampling10000sims"
     info["force"] = True
     info["resume"] = False
     info["debug"] = False
@@ -35,7 +36,7 @@ def simple_info():
         "mcmc": {
             "max_tries": 1000,
             "Rminus1_stop": 0.001,
-            "max_samples": 100,
+            "max_samples": 1000,
         }
     }
     info["theory"] = {
