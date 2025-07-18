@@ -295,62 +295,62 @@ class mHL(DataSetLikelihood):
                     vec.append(mat[:, ch1, ch1])
         return np.array(vec).T
     
-    def compute_XLs(self):
+    def log_likelihood(self,cls_EE):
         #sulla dimensione 1 ci sono i multipoli
         N_ell = self.Cl.shape[1]
+        # print(N_ell)
         self.N_fields=3
-        # N_cross = N_fields * (N_fields - 1) // 2
+        
         x = np.zeros((self.Cl.shape[0],self.Cl.shape[1]))
-        self.clth=(self.clth+self.noise_bias[None,:,:])
+        
         self.clfidu=(self.Clfiducial+self.noise_bias)
-        self.Cross_only_x=np.zeros((1681,3*N_ell))
+        self.Cross_only_x=np.zeros((3*N_ell))
+        self.cltheory = np.zeros((6, N_ell))
+        
+        for i in range(6):
+            self.cltheory[i]= cls_EE+ self.noise_bias[i]
 
-        for isim in range (1681):
-            for ell_idx in range(N_ell):
-                Off = self.vec2mat(self.offset[:, ell_idx], self.N_fields)
-                D = self.vec2mat(self.Cl[:, ell_idx], self.N_fields) + Off[None, :]
+       
+
+        # for isim in range (1681):
+        for ell_idx in range(N_ell):
+            Off = self.vec2mat(self.offset[:, ell_idx], self.N_fields)
+            D = self.vec2mat(self.Cl[:, ell_idx], self.N_fields) + Off[None, :]
             #qui va richiamato cobaya e aggiunto il noise
-                M = self.vec2mat(self.clth[isim, :, ell_idx], self.N_fields) + Off[None, :]
+            # M = self.vec2mat(self.clth[isim, :, ell_idx], self.N_fields) + Off[None, :]
+            M = self.vec2mat(self.cltheory[:, ell_idx], self.N_fields) + Off[None, :]
+
             #qui va aggiunto il rumore
-                F = self.vec2mat(self.clfidu[:, ell_idx], self.N_fields) + Off[None, :] 
+            F = self.vec2mat(self.clfidu[:, ell_idx], self.N_fields) + Off[None, :] 
 
-                w, V = np.linalg.eigh(M[0])
-                L = np.einsum("ij,j,kj->ik", V, 1 / np.sqrt(w), V)
-                P = np.einsum("ji,njk,kl->nil", L, D, L)
+            w, V = np.linalg.eigh(M[0])
+            L = np.einsum("ij,j,kj->ik", V, 1 / np.sqrt(w), V)
+            P = np.einsum("ji,njk,kl->nil", L, D, L)
 
-                w, V = np.linalg.eigh(P)
-                gg = np.sign(w) * self.ghl(np.abs(w))
-                G = np.einsum("nij,nj,nkj->nik", V, gg, V)
+            w, V = np.linalg.eigh(P)
+            gg = np.sign(w) * self.ghl(np.abs(w))
+            G = np.einsum("nij,nj,nkj->nik", V, gg, V)
 
-                w, V = np.linalg.eigh(F[0])
-                L = np.einsum("ij,j,kj->ik", V, np.sqrt(w), V)
-                X = np.einsum("ji,njk,kl->nil", L, G, L)
-                # print("Shape di X:", X.shape)
-                # print("Shape di x:", x.shape)
-                x[:, ell_idx] = self.mat2vec(X)
+            w, V = np.linalg.eigh(F[0])
+            L = np.einsum("ij,j,kj->ik", V, np.sqrt(w), V)
+            X = np.einsum("ji,njk,kl->nil", L, G, L)
+        
+            x[:, ell_idx] = self.mat2vec(X)
 
-        # if custom_idxs is not None:
-        #     x = x[:, custom_idxs, :]
-        # elif exclude_auto:
-        #     cross_idxs = np.array(
-        #     [
-        #         self.chs2idx(ch1, ch2, N_fields)
-        #         for ch1 in range(N_fields)
-        #         for ch2 in range(ch1 + 1, N_fields)
-        #     ]
-        # )
-                cross_idxs=[1,2,4]
-                t = x[cross_idxs, :]
+      
+            cross_idxs=[1,2,4]
+            
 
-        #     x=x.reshape(1, -1)
-            self.Cross_only_x[isim,:]=t.reshape (-1) 
+        self.Cross_only_x[:]=((x[cross_idxs, :]).reshape (-1))
 
-        # chi2 = np.dot(self.Cross_only_x, np.dot(self.inv_cov, self.Cross_only_x))
-        chi2= np.einsum("ni,ij,nj->n", self.Cross_only_x, self.inv_cov, self.Cross_only_x)
+        chi2= np.einsum("i,ij,j->", self.Cross_only_x, self.inv_cov, self.Cross_only_x)
+        chi2 = -2 * np.log((1 + chi2 / (500 - 1)) ** (-500 / 2))
 
-        print(chi2[:30])
-        # chi2 = -2 * np.log((1 + chi2 / (500 - 1)) ** (-500 / 2))
-
+        return -chi2/2
     
-        return X.shape
-    
+    def get_requirements(self):
+        return {"Cl": {"ee": 1000}}
+
+    def logp(self, **params_values):
+        cls = self.provider.get_Cl(ell_factor=True )["ee"][self.lmin : self.lmax + 1]
+        return self.log_likelihood(cls)
