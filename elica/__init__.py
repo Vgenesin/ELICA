@@ -10,6 +10,8 @@ from .likelihood import (
     EE_WLxWL,
 )
 from .likelihood import mHL
+from .likelihood import hybridHL
+
 
 __all__ = [
     "EE_100x143",
@@ -22,6 +24,7 @@ __all__ = [
     "EE_100x143_100xWL_143xWL",
     "EE_full",
     "mHL",
+    "hybridHL"
 
 ]
 
