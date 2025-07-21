@@ -551,7 +551,7 @@ class hybridHL(DataSetLikelihood):
         self.hybrid_x[:]=((x[cross_idxs, :]).reshape (-1))
 
         chi2= np.einsum("i,ij,j->", self.hybrid_x, self.inv_cov, self.hybrid_x)
-        chi2 = -2 * np.log((1 + chi2 / (500 - 1)) ** (-500 / 2))
+        chi2 = -2 * np.log((1 + chi2 / (self.nsims - 1)) ** (-self.nsims / 2))
 
         return -chi2/2
     
