@@ -8,6 +8,7 @@ from .likelihood import (
     EE_143xWL,
     EE_full,
     EE_WLxWL,
+    EE_old100x143,
 )
 from .likelihood import mHL
 from .likelihood import hybridHL
@@ -27,7 +28,8 @@ __all__ = [
     "EE_full",
     "mHL",
     "hybridHL",
-    "fullHL"
+    "fullHL",
+    "EE_old100x143",
 
 ]
 
