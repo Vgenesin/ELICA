@@ -890,7 +890,6 @@ class old_Elica(DataSetLikelihood):
     
     #l'offset viene aggiunto alla Cldata e Clfiducial alla lettura
     def log_likelihood(self, cls_EE):
-        print(self.Cldata)
         Clth = np.tile(cls_EE, self.nsp) + self.offset
         diag = self.Cldata / Clth
         Xl = self.Clfiducial * self.g(diag)
