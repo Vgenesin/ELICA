@@ -165,3 +165,4 @@ cython_debug/
 
 # Ruff 
 .ruff_cache/
+elica/data/WLxWL/notebook_esterno_likelihood_WLxWL.dat
