@@ -83,7 +83,6 @@ class Elica(DataSetLikelihood):
             f.write(f"lmax={data.get('lmax')}\n")
             f.write(f"number_simulations={data.get('number_simulations')}\n")
             f.write(f"number_fields={data.get('number_fields')}\n\n")
-
             f.write("offset_file=offset.dat\n\n")
             f.write("fiducial_file=fiducial.dat\n\n")
             f.write("Cl_file=Cl.dat\n\n")
@@ -109,7 +108,7 @@ class Elica(DataSetLikelihood):
     def log_likelihood(self, cls_EE):
         X = (self.Clfiducial +self.noise_bias + self.offset) * self.glolli((self.Cldata + self.offset) / (cls_EE +self.noise_bias+ self.offset))
         chi2 = np.dot(X, np.dot(self.inv_cov, X))
-        chi2 = self.nsims * np.log((1 + chi2 / (self.nsims - 1)))
+        # chi2 = self.nsims * np.log((1 + chi2 / (self.nsims - 1)))
         return -chi2*0.5
 
 
