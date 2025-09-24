@@ -365,6 +365,7 @@ class hybridHL(DataSetLikelihood):
     def init_params(self,ini):
         self.lmin = ini.int("lmin")
         self.lmax = ini.int("lmax")
+        #nsims e' per quando attivo l'SH
         self.nsims = ini.int("number_simulations")
         self.nsp = ini.int("number_fields")
         self.offset = np.loadtxt(ini.relativeFileName("offset_file"))
@@ -523,7 +524,6 @@ class hybridHL(DataSetLikelihood):
             Off = self.vec2mat(self.offset[:, ell_idx], self.N_fields)
             D = self.vec2mat(self.Cl[:, ell_idx], self.N_fields) + Off[None, :]
             #qui va richiamato cobaya e aggiunto il noise
-            # M = self.vec2mat(self.clth[isim, :, ell_idx], self.N_fields) + Off[None, :]
             M = self.vec2mat(self.cltheory[:, ell_idx], self.N_fields) + Off[None, :]
 
             #qui va aggiunto il rumore
