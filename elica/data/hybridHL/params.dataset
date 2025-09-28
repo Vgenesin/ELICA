@@ -1,6 +1,6 @@
 lmin=2
 lmax=30
-number_simulations=0
+number_simulations=1000
 number_fields=3
 
 offset_file=offset.dat
