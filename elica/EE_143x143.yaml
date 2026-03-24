@@ -1,0 +1,5 @@
+path: null
+
+dataset_file: "data/143x143/params.dataset"
+
+dictionary_file: "data/143x143_dict.pickle"
