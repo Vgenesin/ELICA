@@ -44,18 +44,18 @@ class Elica(DataSetLikelihood):
         self.nsp = ini.int("number_fields")
         self.offset = np.loadtxt(ini.relativeFileName("offset_file"))
         self.Clfiducial = np.loadtxt(ini.relativeFileName("fiducial_file"))
-        self.Cldata = np.loadtxt(ini.relativeFileName("Cl_file")) 
+        self.Cldata = np.loadtxt(ini.relativeFileName("Cl_file"))
         self.inv_cov = np.loadtxt(ini.relativeFileName("inv_covariance_matrix_file"))
         self.noise_bias = np.loadtxt(ini.relativeFileName("noise_bias_file"))
         self.check_equal_to_dict()
 
     def check_equal_to_dict(self):  # TODO: eventually remove this method
-        #file_dir ottiene il percorso della directory corrente
+        # file_dir ottiene il percorso della directory corrente
         file_dir = os.path.abspath(os.path.dirname(__file__))
-        #definisce il dizionario da caicare
+        # definisce il dizionario da caicare
         self.dictionary_file = os.path.join(file_dir, self.dictionary_file)
         with open(self.dictionary_file, "rb") as pickle_file:
-            #assegna il contenuto del file pickle a data
+            # assegna il contenuto del file pickle a data
             data = pickle.load(pickle_file)
         assert np.allclose(data.get("lmin"), self.lmin)
         assert np.allclose(data.get("lmax"), self.lmax)
@@ -63,7 +63,7 @@ class Elica(DataSetLikelihood):
         assert np.allclose(data.get("number_fields"), self.nsp)
         assert np.allclose(data.get("offset"), self.offset)
         assert np.allclose(data.get("fiducial"), self.Clfiducial)
-        assert np.allclose(data.get("Cl") , self.Cldata)
+        assert np.allclose(data.get("Cl"), self.Cldata)
         assert np.allclose(data.get("inv_covariance_matrix"), self.inv_cov)
         assert np.allclose(data.get("noise_bias"), self.noise_bias)
 
@@ -99,57 +99,61 @@ class Elica(DataSetLikelihood):
         file = os.path.join(file_dir, f"data/{name_data}/noise_bias.dat")
         np.savetxt(file, data.get("noise_bias"))
 
-    def ghl(self,x):
+    def ghl(self, x):
         return np.sign(x - 1) * np.sqrt(2.0 * (x - np.log(x) - 1))
 
     def glolli(self, x):
         return np.sign(x) * self.ghl(np.abs(x))
-    
-    def log_likelihood(self, cls_EE):
-        X = (self.Clfiducial +self.noise_bias + self.offset) * self.glolli((self.Cldata + self.offset) / (cls_EE +self.noise_bias+ self.offset))
-        chi2 = np.dot(X, np.dot(self.inv_cov, X))
-        chi2 = self.nsims * np.log((1 + chi2 / (self.nsims - 1)))
-        return -chi2*0.5
 
+    def log_likelihood(self, cls_EE):
+        X = (self.Clfiducial + self.noise_bias + self.offset) * self.glolli(
+            (self.Cldata + self.offset) / (cls_EE + self.noise_bias + self.offset)
+        )
+        chi2 = np.dot(X, np.dot(self.inv_cov, X))
+        chi2 = self.nsims * np.log(1 + chi2 / (self.nsims - 1))
+        return -chi2 * 0.5
 
     def get_requirements(self):
         return {"Cl": {"ee": 1000}}
 
     def logp(self, **params_values):
-        cls = self.provider.get_Cl(ell_factor=True )["ee"][self.lmin : self.lmax + 1]
+        cls = self.provider.get_Cl(ell_factor=True)["ee"][self.lmin : self.lmax + 1]
         return self.log_likelihood(cls)
-
-
 
 
 # Derivative classes (they need the .yaml file)
 class EE_100x100(Elica): ...
 
+
 class EE_100x143(Elica): ...
+
 
 class EE_100xWL(Elica): ...
 
+
 class EE_143x143(Elica): ...
 
+
 class EE_143xWL(Elica): ...
+
 
 class EE_WLxWL(Elica): ...
 
 
 class EE_full(Elica): ...
 
+
 class mHL(DataSetLikelihood):
-    
     install_options = {}
 
-    def init_params(self,ini):
+    def init_params(self, ini):
         self.lmin = ini.int("lmin")
         self.lmax = ini.int("lmax")
         self.nsims = ini.int("number_simulations")
         self.nsp = ini.int("number_fields")
         self.offset = np.loadtxt(ini.relativeFileName("offset_file"))
         self.Clfiducial = np.loadtxt(ini.relativeFileName("fiducial_file"))
-        self.Cl = np.loadtxt(ini.relativeFileName("Cl_file")) 
+        self.Cl = np.loadtxt(ini.relativeFileName("Cl_file"))
         self.inv_cov = np.loadtxt(ini.relativeFileName("inv_covariance_matrix_file"))
         self.noise_bias = np.loadtxt(ini.relativeFileName("noise_bias_file"))
         # self.clth=np.loadtxt(ini.relativeFileName("clth_file")).reshape(1681,6,29)
@@ -166,7 +170,7 @@ class mHL(DataSetLikelihood):
         assert np.allclose(data.get("number_fields"), self.nsp)
         assert np.allclose(data.get("offset"), self.offset)
         assert np.allclose(data.get("fiducial"), self.Clfiducial)
-        assert np.allclose(data.get("Cl") , self.Cl)
+        assert np.allclose(data.get("Cl"), self.Cl)
         assert np.allclose(data.get("inv_covariance_matrix"), self.inv_cov)
         assert np.allclose(data.get("noise_bias"), self.noise_bias)
         # assert np.allclose(data.get("clth"), self.clth)
@@ -196,7 +200,6 @@ class mHL(DataSetLikelihood):
             f.write("noise_bias_file=noise_bias.dat\n\n")
             f.write("clth_file=clth.dat\n\n")
 
-
         file = os.path.join(file_dir, f"data/{name_data}/offset.dat")
         np.savetxt(file, data.get("offset"))
         file = os.path.join(file_dir, f"data/{name_data}/fiducial.dat")
@@ -210,12 +213,12 @@ class mHL(DataSetLikelihood):
         file = os.path.join(file_dir, f"data/{name_data}/clth.dat")
         np.savetxt(file, data.get("clth"))
 
-    def ghl(self,x):
+    def ghl(self, x):
         return np.sign(x - 1) * np.sqrt(2.0 * (x - np.log(x) - 1))
 
     def glolli(self, x):
         return np.sign(x) * self.ghl(np.abs(x))
-    
+
     def chs2idx(self, ch1, ch2, N_chs):
         return ch1 * (2 * N_chs - ch1 + 1) // 2 + (ch2 - ch1)
 
@@ -223,8 +226,8 @@ class mHL(DataSetLikelihood):
         total = N_chs * (N_chs + 1) // 2
         if idx < 0 or idx >= total:
             raise ValueError(
-            f"Index {idx} out of bounds for a matrix with {N_chs} channels."
-        )
+                f"Index {idx} out of bounds for a matrix with {N_chs} channels."
+            )
 
         i = 0
         while (i * (2 * N_chs - i + 1)) // 2 <= idx:
@@ -236,10 +239,12 @@ class mHL(DataSetLikelihood):
 
     def vec2mat(self, vect, N_fields, *, all=True, cross=True):
         cross_idxs = np.array(
-            [self.chs2idx(ch1, ch2, N_fields)
-         for ch1 in range(N_fields)
-         for ch2 in range(ch1 + 1, N_fields)]
-    )
+            [
+                self.chs2idx(ch1, ch2, N_fields)
+                for ch1 in range(N_fields)
+                for ch2 in range(ch1 + 1, N_fields)
+            ]
+        )
         auto_idxs = np.array([self.chs2idx(ch, ch, N_fields) for ch in range(N_fields)])
 
         if len(vect.shape) == 2:
@@ -260,14 +265,11 @@ class mHL(DataSetLikelihood):
 
         return np.squeeze(mat)
 
-    def ghl(self,x):
-        return np.sign(x - 1) * np.sqrt(2.0 * (x - np.log(x) - 1))
-
     def mat2vec(self, mat, *, all=True, cross=True):
-    #N_chs=3
+        # N_chs=3
         N_chs = mat.shape[1]
         vec = []
-    #range 6
+        # range 6
         for idx in range(N_chs * (N_chs + 1) // 2):
             ch1, ch2 = self.idx2chs(idx, N_chs)
             if cross:
@@ -280,34 +282,34 @@ class mHL(DataSetLikelihood):
                 if ch1 == ch2:
                     vec.append(mat[:, ch1, ch1])
         return np.array(vec).T
-    
-    def log_likelihood(self,cls_EE):
-        #sulla dimensione 1 ci sono i multipoli
+
+    def log_likelihood(self, cls_EE):
+        # sulla dimensione 1 ci sono i multipoli
         N_ell = self.Cl.shape[1]
         # print(N_ell)
-        self.N_fields=3
-        
-        x = np.zeros((self.Cl.shape[0],self.Cl.shape[1]))
-        
-        self.clfidu=(self.Clfiducial+self.noise_bias)
-        self.Cross_only_x=np.zeros((3*N_ell))
-        self.cltheory = np.zeros((6, N_ell))
-        
-        for i in range(6):
-            self.cltheory[i]= cls_EE+ self.noise_bias[i]
+        self.N_fields = 3
 
-       
+        x = np.zeros((self.Cl.shape[0], self.Cl.shape[1]))
+
+        self.clfidu = self.Clfiducial + self.noise_bias
+        self.Cross_only_x = np.zeros(3 * N_ell)
+        self.cltheory = np.zeros((6, N_ell))
+
+        for i in range(6):
+            self.cltheory[i] = cls_EE + self.noise_bias[i]
 
         # for isim in range (1681):
         for ell_idx in range(N_ell):
             Off = self.vec2mat(self.offset[:, ell_idx], self.N_fields)
             D = self.vec2mat(self.Cl[:, ell_idx], self.N_fields) + Off[None, :]
-            #qui va richiamato cobaya e aggiunto il noise
-            # M = self.vec2mat(self.clth[isim, :, ell_idx], self.N_fields) + Off[None, :]
+            # qui va richiamato cobaya e aggiunto il noise
+            # M = self.vec2mat(
+            #     self.clth[isim, :, ell_idx], self.N_fields
+            # ) + Off[None, :]
             M = self.vec2mat(self.cltheory[:, ell_idx], self.N_fields) + Off[None, :]
 
-            #qui va aggiunto il rumore
-            F = self.vec2mat(self.clfidu[:, ell_idx], self.N_fields) + Off[None, :] 
+            # qui va aggiunto il rumore
+            F = self.vec2mat(self.clfidu[:, ell_idx], self.N_fields) + Off[None, :]
 
             w, V = np.linalg.eigh(M[0])
             L = np.einsum("ij,j,kj->ik", V, 1 / np.sqrt(w), V)
@@ -320,44 +322,38 @@ class mHL(DataSetLikelihood):
             w, V = np.linalg.eigh(F[0])
             L = np.einsum("ij,j,kj->ik", V, np.sqrt(w), V)
             X = np.einsum("ji,njk,kl->nil", L, G, L)
-        
+
             x[:, ell_idx] = self.mat2vec(X)
 
-      
-            cross_idxs=[1,2,4]
-            
+            cross_idxs = [1, 2, 4]
 
-        self.Cross_only_x[:]=((x[cross_idxs, :]).reshape (-1))
+        self.Cross_only_x[:] = (x[cross_idxs, :]).reshape(-1)
 
-        chi2= np.einsum("i,ij,j->", self.Cross_only_x, self.inv_cov, self.Cross_only_x)
+        chi2 = np.einsum("i,ij,j->", self.Cross_only_x, self.inv_cov, self.Cross_only_x)
         chi2 = -2 * np.log((1 + chi2 / (self.nsims - 1)) ** (-self.nsims / 2))
 
-        return -chi2/2
-    
+        return -chi2 / 2
+
     def get_requirements(self):
         return {"Cl": {"ee": 1000}}
 
     def logp(self, **params_values):
-        cls = self.provider.get_Cl(ell_factor=True )["ee"][self.lmin : self.lmax + 1]
+        cls = self.provider.get_Cl(ell_factor=True)["ee"][self.lmin : self.lmax + 1]
         return self.log_likelihood(cls)
-    
-
-
 
 
 class hybridHL(DataSetLikelihood):
-    
     install_options = {}
 
-    def init_params(self,ini):
+    def init_params(self, ini):
         self.lmin = ini.int("lmin")
         self.lmax = ini.int("lmax")
-        #nsims e' per quando attivo l'SH
+        # nsims e' per quando attivo l'SH
         self.nsims = ini.int("number_simulations")
         self.nsp = ini.int("number_fields")
         self.offset = np.loadtxt(ini.relativeFileName("offset_file"))
         self.Clfiducial = np.loadtxt(ini.relativeFileName("fiducial_file"))
-        self.Cl = np.loadtxt(ini.relativeFileName("Cl_file")) 
+        self.Cl = np.loadtxt(ini.relativeFileName("Cl_file"))
         self.inv_cov = np.loadtxt(ini.relativeFileName("inv_covariance_matrix_file"))
         self.noise_bias = np.loadtxt(ini.relativeFileName("noise_bias_file"))
         # self.clth=np.loadtxt(ini.relativeFileName("clth_file")).reshape(1681,6,29)
@@ -374,7 +370,7 @@ class hybridHL(DataSetLikelihood):
         assert np.allclose(data.get("number_fields"), self.nsp)
         assert np.allclose(data.get("offset"), self.offset)
         assert np.allclose(data.get("fiducial"), self.Clfiducial)
-        assert np.allclose(data.get("Cl") , self.Cl)
+        assert np.allclose(data.get("Cl"), self.Cl)
         assert np.allclose(data.get("inv_covariance_matrix"), self.inv_cov)
         assert np.allclose(data.get("noise_bias"), self.noise_bias)
         # assert np.allclose(data.get("clth"), self.clth)
@@ -404,7 +400,6 @@ class hybridHL(DataSetLikelihood):
             f.write("noise_bias_file=noise_bias.dat\n\n")
             # f.write("clth_file=clth.dat\n\n")
 
-
         file = os.path.join(file_dir, f"data/{name_data}/offset.dat")
         np.savetxt(file, data.get("offset"))
         file = os.path.join(file_dir, f"data/{name_data}/fiducial.dat")
@@ -418,12 +413,12 @@ class hybridHL(DataSetLikelihood):
         # file = os.path.join(file_dir, f"data/{name_data}/clth.dat")
         # np.savetxt(file, data.get("clth"))
 
-    def ghl(self,x):
+    def ghl(self, x):
         return np.sign(x - 1) * np.sqrt(2.0 * (x - np.log(x) - 1))
 
     def glolli(self, x):
         return np.sign(x) * self.ghl(np.abs(x))
-    
+
     def chs2idx(self, ch1, ch2, N_chs):
         return ch1 * (2 * N_chs - ch1 + 1) // 2 + (ch2 - ch1)
 
@@ -431,8 +426,8 @@ class hybridHL(DataSetLikelihood):
         total = N_chs * (N_chs + 1) // 2
         if idx < 0 or idx >= total:
             raise ValueError(
-            f"Index {idx} out of bounds for a matrix with {N_chs} channels."
-        )
+                f"Index {idx} out of bounds for a matrix with {N_chs} channels."
+            )
 
         i = 0
         while (i * (2 * N_chs - i + 1)) // 2 <= idx:
@@ -444,10 +439,12 @@ class hybridHL(DataSetLikelihood):
 
     def vec2mat(self, vect, N_fields, *, all=True, cross=True):
         cross_idxs = np.array(
-            [self.chs2idx(ch1, ch2, N_fields)
-         for ch1 in range(N_fields)
-         for ch2 in range(ch1 + 1, N_fields)]
-    )
+            [
+                self.chs2idx(ch1, ch2, N_fields)
+                for ch1 in range(N_fields)
+                for ch2 in range(ch1 + 1, N_fields)
+            ]
+        )
         auto_idxs = np.array([self.chs2idx(ch, ch, N_fields) for ch in range(N_fields)])
 
         if len(vect.shape) == 2:
@@ -468,14 +465,11 @@ class hybridHL(DataSetLikelihood):
 
         return np.squeeze(mat)
 
-    def ghl(self,x):
-        return np.sign(x - 1) * np.sqrt(2.0 * (x - np.log(x) - 1))
-
     def mat2vec(self, mat, *, all=True, cross=True):
-    #N_chs=3
+        # N_chs=3
         N_chs = mat.shape[1]
         vec = []
-    #range 6
+        # range 6
         for idx in range(N_chs * (N_chs + 1) // 2):
             ch1, ch2 = self.idx2chs(idx, N_chs)
             if cross:
@@ -488,33 +482,31 @@ class hybridHL(DataSetLikelihood):
                 if ch1 == ch2:
                     vec.append(mat[:, ch1, ch1])
         return np.array(vec).T
-    
-    def log_likelihood(self,cls_EE):
-        #sulla dimensione 1 ci sono i multipoli
+
+    def log_likelihood(self, cls_EE):
+        # sulla dimensione 1 ci sono i multipoli
         N_ell = self.Cl.shape[1]
         # print(N_ell)
-        self.N_fields=3
-        
-        x = np.zeros((self.Cl.shape[0],self.Cl.shape[1]))
-        
-        self.clfidu=(self.Clfiducial+self.noise_bias)
-        self.hybrid_x=np.zeros((4*N_ell))
-        self.cltheory = np.zeros((6, N_ell))
-        
-        for i in range(6):
-            self.cltheory[i]= cls_EE+ self.noise_bias[i]
+        self.N_fields = 3
 
-       
+        x = np.zeros((self.Cl.shape[0], self.Cl.shape[1]))
+
+        self.clfidu = self.Clfiducial + self.noise_bias
+        self.hybrid_x = np.zeros(4 * N_ell)
+        self.cltheory = np.zeros((6, N_ell))
+
+        for i in range(6):
+            self.cltheory[i] = cls_EE + self.noise_bias[i]
 
         # for isim in range (1681):
         for ell_idx in range(N_ell):
             Off = self.vec2mat(self.offset[:, ell_idx], self.N_fields)
             D = self.vec2mat(self.Cl[:, ell_idx], self.N_fields) + Off[None, :]
-            #qui va richiamato cobaya e aggiunto il noise
+            # qui va richiamato cobaya e aggiunto il noise
             M = self.vec2mat(self.cltheory[:, ell_idx], self.N_fields) + Off[None, :]
 
-            #qui va aggiunto il rumore
-            F = self.vec2mat(self.clfidu[:, ell_idx], self.N_fields) + Off[None, :] 
+            # qui va aggiunto il rumore
+            F = self.vec2mat(self.clfidu[:, ell_idx], self.N_fields) + Off[None, :]
 
             w, V = np.linalg.eigh(M[0])
             L = np.einsum("ij,j,kj->ik", V, 1 / np.sqrt(w), V)
@@ -527,42 +519,37 @@ class hybridHL(DataSetLikelihood):
             w, V = np.linalg.eigh(F[0])
             L = np.einsum("ij,j,kj->ik", V, np.sqrt(w), V)
             X = np.einsum("ji,njk,kl->nil", L, G, L)
-        
+
             x[:, ell_idx] = self.mat2vec(X)
 
-      
-            cross_idxs=[1,2,4,5]
-            
+            cross_idxs = [1, 2, 4, 5]
 
-        self.hybrid_x[:]=((x[cross_idxs, :]).reshape (-1))
+        self.hybrid_x[:] = (x[cross_idxs, :]).reshape(-1)
 
-        chi2= np.einsum("i,ij,j->", self.hybrid_x, self.inv_cov, self.hybrid_x)
+        chi2 = np.einsum("i,ij,j->", self.hybrid_x, self.inv_cov, self.hybrid_x)
         chi2 = -2 * np.log((1 + chi2 / (self.nsims - 1)) ** (-self.nsims / 2))
 
-        return -chi2/2
-    
+        return -chi2 / 2
+
     def get_requirements(self):
         return {"Cl": {"ee": 1000}}
 
     def logp(self, **params_values):
-        cls = self.provider.get_Cl(ell_factor=True )["ee"][self.lmin : self.lmax + 1]
+        cls = self.provider.get_Cl(ell_factor=True)["ee"][self.lmin : self.lmax + 1]
         return self.log_likelihood(cls)
-    
-
 
 
 class fullHL(DataSetLikelihood):
-    
     install_options = {}
 
-    def init_params(self,ini):
+    def init_params(self, ini):
         self.lmin = ini.int("lmin")
         self.lmax = ini.int("lmax")
         self.nsims = ini.int("number_simulations")
         self.nsp = ini.int("number_fields")
         self.offset = np.loadtxt(ini.relativeFileName("offset_file"))
         self.Clfiducial = np.loadtxt(ini.relativeFileName("fiducial_file"))
-        self.Cl = np.loadtxt(ini.relativeFileName("Cl_file")) 
+        self.Cl = np.loadtxt(ini.relativeFileName("Cl_file"))
         self.inv_cov = np.loadtxt(ini.relativeFileName("inv_covariance_matrix_file"))
         self.noise_bias = np.loadtxt(ini.relativeFileName("noise_bias_file"))
         self.check_equal_to_dict()
@@ -578,11 +565,11 @@ class fullHL(DataSetLikelihood):
         assert np.allclose(data.get("number_fields"), self.nsp)
         assert np.allclose(data.get("offset"), self.offset)
         assert np.allclose(data.get("fiducial"), self.Clfiducial)
-        assert np.allclose(data.get("Cl") , self.Cl)
+        assert np.allclose(data.get("Cl"), self.Cl)
         assert np.allclose(data.get("inv_covariance_matrix"), self.inv_cov)
         assert np.allclose(data.get("noise_bias"), self.noise_bias)
 
-    def dict_to_plain_data(self):  # TODO: 
+    def dict_to_plain_data(self):  # TODO:
         name_data = "fullHL"
         file_dir = os.path.abspath(os.path.dirname(__file__))
         self.dictionary_file = os.path.join(file_dir, self.dictionary_file)
@@ -604,7 +591,6 @@ class fullHL(DataSetLikelihood):
             f.write("inv_covariance_matrix_file=inv_covariance_matrix.dat\n\n")
             f.write("noise_bias_file=noise_bias.dat\n\n")
 
-
         file = os.path.join(file_dir, f"data/{name_data}/offset.dat")
         np.savetxt(file, data.get("offset"))
         file = os.path.join(file_dir, f"data/{name_data}/fiducial.dat")
@@ -618,12 +604,12 @@ class fullHL(DataSetLikelihood):
         # file = os.path.join(file_dir, f"data/{name_data}/clth.dat")
         # np.savetxt(file, data.get("clth"))
 
-    def ghl(self,x):
+    def ghl(self, x):
         return np.sign(x - 1) * np.sqrt(2.0 * (x - np.log(x) - 1))
 
     def glolli(self, x):
         return np.sign(x) * self.ghl(np.abs(x))
-    
+
     def chs2idx(self, ch1, ch2, N_chs):
         return ch1 * (2 * N_chs - ch1 + 1) // 2 + (ch2 - ch1)
 
@@ -631,8 +617,8 @@ class fullHL(DataSetLikelihood):
         total = N_chs * (N_chs + 1) // 2
         if idx < 0 or idx >= total:
             raise ValueError(
-            f"Index {idx} out of bounds for a matrix with {N_chs} channels."
-        )
+                f"Index {idx} out of bounds for a matrix with {N_chs} channels."
+            )
 
         i = 0
         while (i * (2 * N_chs - i + 1)) // 2 <= idx:
@@ -644,10 +630,12 @@ class fullHL(DataSetLikelihood):
 
     def vec2mat(self, vect, N_fields, *, all=True, cross=True):
         cross_idxs = np.array(
-            [self.chs2idx(ch1, ch2, N_fields)
-         for ch1 in range(N_fields)
-         for ch2 in range(ch1 + 1, N_fields)]
-    )
+            [
+                self.chs2idx(ch1, ch2, N_fields)
+                for ch1 in range(N_fields)
+                for ch2 in range(ch1 + 1, N_fields)
+            ]
+        )
         auto_idxs = np.array([self.chs2idx(ch, ch, N_fields) for ch in range(N_fields)])
 
         if len(vect.shape) == 2:
@@ -668,14 +656,11 @@ class fullHL(DataSetLikelihood):
 
         return np.squeeze(mat)
 
-    def ghl(self,x):
-        return np.sign(x - 1) * np.sqrt(2.0 * (x - np.log(x) - 1))
-
     def mat2vec(self, mat, *, all=True, cross=True):
-    #N_chs=3
+        # N_chs=3
         N_chs = mat.shape[1]
         vec = []
-    #range 6
+        # range 6
         for idx in range(N_chs * (N_chs + 1) // 2):
             ch1, ch2 = self.idx2chs(idx, N_chs)
             if cross:
@@ -688,34 +673,34 @@ class fullHL(DataSetLikelihood):
                 if ch1 == ch2:
                     vec.append(mat[:, ch1, ch1])
         return np.array(vec).T
-    
-    def log_likelihood(self,cls_EE):
-        #sulla dimensione 1 ci sono i multipoli
+
+    def log_likelihood(self, cls_EE):
+        # sulla dimensione 1 ci sono i multipoli
         N_ell = self.Cl.shape[1]
         # print(N_ell)
-        self.N_fields=3
-        
-        x = np.zeros((self.Cl.shape[0],self.Cl.shape[1]))
-        
-        self.clfidu=(self.Clfiducial+self.noise_bias)
-        self.full_x=np.zeros((6*N_ell))
-        self.cltheory = np.zeros((6, N_ell))
-        
-        for i in range(6):
-            self.cltheory[i]= cls_EE+ self.noise_bias[i]
+        self.N_fields = 3
 
-       
+        x = np.zeros((self.Cl.shape[0], self.Cl.shape[1]))
+
+        self.clfidu = self.Clfiducial + self.noise_bias
+        self.full_x = np.zeros(6 * N_ell)
+        self.cltheory = np.zeros((6, N_ell))
+
+        for i in range(6):
+            self.cltheory[i] = cls_EE + self.noise_bias[i]
 
         # for isim in range (1681):
         for ell_idx in range(N_ell):
             Off = self.vec2mat(self.offset[:, ell_idx], self.N_fields)
             D = self.vec2mat(self.Cl[:, ell_idx], self.N_fields) + Off[None, :]
-            #qui va richiamato cobaya e aggiunto il noise
-            # M = self.vec2mat(self.clth[isim, :, ell_idx], self.N_fields) + Off[None, :]
+            # qui va richiamato cobaya e aggiunto il noise
+            # M = self.vec2mat(
+            #     self.clth[isim, :, ell_idx], self.N_fields
+            # ) + Off[None, :]
             M = self.vec2mat(self.cltheory[:, ell_idx], self.N_fields) + Off[None, :]
 
-            #qui va aggiunto il rumore
-            F = self.vec2mat(self.clfidu[:, ell_idx], self.N_fields) + Off[None, :] 
+            # qui va aggiunto il rumore
+            F = self.vec2mat(self.clfidu[:, ell_idx], self.N_fields) + Off[None, :]
 
             w, V = np.linalg.eigh(M[0])
             L = np.einsum("ij,j,kj->ik", V, 1 / np.sqrt(w), V)
@@ -728,33 +713,21 @@ class fullHL(DataSetLikelihood):
             w, V = np.linalg.eigh(F[0])
             L = np.einsum("ij,j,kj->ik", V, np.sqrt(w), V)
             X = np.einsum("ji,njk,kl->nil", L, G, L)
-        
+
             x[:, ell_idx] = self.mat2vec(X)
 
-      
             # cross_idxs=[1,2,4,5]
-            
 
-        self.full_x[:]=(x.reshape (-1))
+        self.full_x[:] = x.reshape(-1)
 
-        chi2= np.einsum("i,ij,j->", self.full_x, self.inv_cov, self.full_x)
+        chi2 = np.einsum("i,ij,j->", self.full_x, self.inv_cov, self.full_x)
         chi2 = -2 * np.log((1 + chi2 / (self.nsims - 1)) ** (-self.nsims / 2))
 
-        return -chi2/2
-    
+        return -chi2 / 2
+
     def get_requirements(self):
         return {"Cl": {"ee": 1000}}
 
     def logp(self, **params_values):
-        cls = self.provider.get_Cl(ell_factor=True )["ee"][self.lmin : self.lmax + 1]
+        cls = self.provider.get_Cl(ell_factor=True)["ee"][self.lmin : self.lmax + 1]
         return self.log_likelihood(cls)
-    
-
-
-
-
-
-
-
-
-
