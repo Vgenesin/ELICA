@@ -1,8 +1,49 @@
+[project]
+name = "ELiCA"
+version = "0.1.0"
+description = "E-mode Likelihood for Cross-Analysis: external Cobaya likelihood package"
+authors = [
+    {name = "Genesini Valentina", email = "valentina.genesini@unife.it"},
+    {name = "Galloni Giacomo", email = "giacomo.galloni@unife.it"},
+    {name = "Pagano Luca", email = "luca.pagano@unife.it"},
+]
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "camb>=1.6.6",
+    "cobaya>=3.6.1",
+    "numpy>=2.2.6",
+    "scipy>=1.15.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit>=4.2.0",
+    "ruff>=0.11.11",
+    "pytest>=8.4.1",
+    "pytest-cov>=7.0.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["elica*"]
+
+[tool.setuptools.package-data]
+elica = ["*.yaml", "*.bibtex", "data/*.pickle", "data/*.pkl"]
+
+[tool.coverage.run]
+relative_files = true
+
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+version_file = "./_version.py"
+
 [tool.ruff]
 lint.extend-select = ["I", "E", "W", "F", "E501"]
 lint.ignore = []
 line-length = 88
-
 
 [tool.ruff.format]
 quote-style = "double"
