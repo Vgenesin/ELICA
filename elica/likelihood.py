@@ -50,12 +50,9 @@ class Elica(DataSetLikelihood):
         self.check_equal_to_dict()
 
     def check_equal_to_dict(self):  # TODO: eventually remove this method
-        # file_dir ottiene il percorso della directory corrente
         file_dir = os.path.abspath(os.path.dirname(__file__))
-        # definisce il dizionario da caicare
         self.dictionary_file = os.path.join(file_dir, self.dictionary_file)
         with open(self.dictionary_file, "rb") as pickle_file:
-            # assegna il contenuto del file pickle a data
             data = pickle.load(pickle_file)
         assert np.allclose(data.get("lmin"), self.lmin)
         assert np.allclose(data.get("lmax"), self.lmax)
@@ -121,7 +118,6 @@ class Elica(DataSetLikelihood):
         return self.log_likelihood(cls)
 
 
-# Derivative classes (they need the .yaml file)
 class EE_100x100(Elica): ...
 
 
