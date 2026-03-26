@@ -1,5 +1,6 @@
 from cobaya.log import LoggedError
 from cobaya.run import run
+from mpi4py import MPI
 
 data = "100x143_100xWL_143xWL"
 
@@ -41,6 +42,9 @@ info["theory"] = {
     }
 }
 
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
+
 success = False
 try:
     upd_info, mcmc = run(info)
@@ -48,5 +52,7 @@ try:
 except LoggedError as err:
     print(err)
 
-if not success:
+success = all(comm.allgather(success))
+
+if not success and rank == 0:
     print("Sampling failed!")

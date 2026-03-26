@@ -1,0 +1,4 @@
+numpy
+cobaya
+mpi4py-mpich
+camb

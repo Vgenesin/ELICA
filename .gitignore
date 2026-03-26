@@ -163,10 +163,6 @@ cython_debug/
 # VS Code
 .vscode/
 
-# Ruff
+# Ruff 
 .ruff_cache/
-
-# Claude Code
-.claude/
-
 elica/data/WLxWL/notebook_esterno_likelihood_WLxWL.dat

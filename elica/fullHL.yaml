@@ -1,0 +1,5 @@
+path: null
+
+dataset_file: "data/fullHL/params.dataset"
+
+dictionary_file: "data/fullHL_dict.pickle"
