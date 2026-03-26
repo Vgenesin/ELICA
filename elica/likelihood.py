@@ -8,8 +8,12 @@ class _ElicaCMBlikes(CMBlikes):
 
     Extends CMBlikes with:
     - Offset: additive correction to data, noise, and fiducial
-    - new ghl transform: handles negative eigenvalues in the HL transform
+    - Modified gHL: extends the HL transform to handle negative eigenvalues
+      following Mangilli et al. (2015, https://doi.org/10.1093/mnras/stv1733),
+      applying sign(x) * gHL(|x|)
     - Sellentin-Heavens correction: accounts for finite simulation covariance
+    - Spectrum marginalization via covmat_cl selection, following Galloni et al.
+      (2025, https://doi.org/10.1088/1475-7516/2025/12/052)
     """
 
     install_options = {}
@@ -88,7 +92,11 @@ class _ElicaCMBlikes(CMBlikes):
 
     @staticmethod
     def transform(C, Chat, Cfhalf):
-        """HL transformation with gLoLLi extension for negative eigenvalues."""
+        """Modified gHL transform supporting negative eigenvalues.
+
+        Applies sign(x) * gHL(|x|) instead of clipping negative eigenvalues to
+        zero, following Mangilli et al. (2015), doi:10.1093/mnras/stv1733.
+        """
         if C.shape[0] == 1:
             rat = Chat[0, 0] / C[0, 0]
             abs_rat = np.abs(rat)
