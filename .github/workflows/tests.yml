@@ -12,6 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
+      - run: uv sync --all-extras --dev --locked
       - run: uv run ruff check .
       - run: uv run ruff format --check .
 
@@ -24,8 +25,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: uv sync --all-extras --dev --locked
       - name: Run tests with coverage
-        run: uv run --python ${{ matrix.python-version }} pytest tests/ --cov=elica --cov-report=xml -v
+        run: uv run pytest tests/ --cov=elica --cov-report=xml -v
       - name: Upload coverage to Codecov
         if: matrix.python-version == '3.12'
         uses: codecov/codecov-action@v5
