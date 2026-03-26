@@ -1,6 +1,6 @@
 project = "ELiCA"
-copyright = "2024, Genesini V., Galloni G., Pagano L."
-author = "Genesini V., Galloni G., Pagano L."
+copyright = "2024, Genesini V., Galloni G., Pagano L., Campeti P., Lattanzi M."
+author = "Genesini V., Galloni G., Pagano L., Campeti P., Lattanzi M."
 
 extensions = [
     "sphinx.ext.autodoc",

@@ -13,7 +13,7 @@ From source
 
 .. code-block:: bash
 
-   git clone https://github.com/Vgenesin/ELICA.git
+   git clone https://github.com/Vgenesin/ELiCA.git
    cd ELICA
    uv sync
 
