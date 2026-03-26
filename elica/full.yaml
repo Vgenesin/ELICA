@@ -1,0 +1,4 @@
+path: null
+dataset_file: "data/full/params.dataset"
+map_separator: x
+l_max: 1000
