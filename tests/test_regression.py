@@ -1,8 +1,7 @@
 import numpy as np
 import pytest
 from cobaya.model import get_model
-
-from elica.tests.conftest import make_cobaya_info
+from conftest import make_cobaya_info
 
 REFERENCE_VALUES = {
     "EE_100x100": -1.694695323446801e01,
