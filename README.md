@@ -1,29 +1,73 @@
-# ELICA
-This repository is dedicated to the likelihood code for E mode polarisation
-study with the aim of constraining the epoch of reioization
+# ELiCA
+
+E-mode Likelihood for Cross-Analysis: an external [cobaya](https://cobaya.readthedocs.io/) likelihood package for CMB E-mode polarization, targeting constraints on the epoch of reionization.
+
+## Installation
+
+```bash
+pip install elica
+```
+
+Or from source:
+
+```bash
+git clone https://github.com/Vgenesin/ELICA.git
+cd ELICA
+uv sync
+```
+
+You can also use `pip install .` if you don't have [uv](https://docs.astral.sh/uv/).
+
+## Usage
+
+ELiCA provides several likelihoods that can be used directly in cobaya:
+
+| Likelihood | cobaya name | Description |
+| --- | --- | --- |
+| `elica` | `elica` | Flagship hybrid (cross-spectra + WLxWL) |
+| `cross` | `elica.cross` | Cross-spectra only |
+| `full` | `elica.full` | All auto + cross spectra |
+| `EE_100x100` | `elica.EE_100x100` | Single-field 100GHz auto |
+| `EE_100x143` | `elica.EE_100x143` | Single-field 100x143 cross |
+| `EE_100xWL` | `elica.EE_100xWL` | Single-field 100xWL cross |
+| `EE_143x143` | `elica.EE_143x143` | Single-field 143GHz auto |
+| `EE_143xWL` | `elica.EE_143xWL` | Single-field 143xWL cross |
+| `EE_WLxWL` | `elica.EE_WLxWL` | Single-field WL auto |
+
+Example cobaya input:
+
+```yaml
+likelihood:
+  elica:
+
+theory:
+  camb:
+    extra_args:
+      lens_potential_accuracy: 1
+      nnu: 3.044
+      num_massive_neutrinos: 1
+```
+
+See `examples/` for a full sampling script.
 
 ## Development
 
-The code is tested with `pytest`. To run the tests, simply runS
 ```bash
-pytest .
-```
-from the root directory of the repository.
-
-Also, the code is formatted with `ruff`. To check the formatting of the code, simply run
-```bash
-ruff check .
+git clone https://github.com/Vgenesin/ELICA.git
+cd ELICA
+uv sync --all-extras --dev
+pre-commit install
 ```
 
-To format the code, you can run
+Run tests:
+
 ```bash
-ruff format --diff .
+uv run pytest tests/ -v
 ```
 
-The formatting is also encoded in a pre-commit hook. To install the pre-commit hook, run
-```bash
-pip install pre-commit; pre-commit install
-```
+Lint and format:
 
-This will run the `ruff` commands before each commit.
-This will ensure that the code is always formatted correctly and uniformly.
+```bash
+uv run ruff check .
+uv run ruff format --check .
+```
