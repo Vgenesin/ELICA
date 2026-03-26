@@ -1,4 +1,4 @@
 path: null
-dataset_file: "data/EE_WLxWL/params.dataset"
+dataset_file: "data/EE_WLxWL.dataset"
 map_separator: x
 l_max: 1000

@@ -1,4 +1,4 @@
 path: null
-dataset_file: "data/elica/params.dataset"
+dataset_file: "data/elica.dataset"
 map_separator: x
 l_max: 1000

@@ -16,7 +16,7 @@ cl_fiducial_includes_noise = False
 cl_noise_file = cl_noise.dat
 offset_file = offset.dat
 
-covmat_cl = 100GHzx143GHz 100GHzxWL 143GHzxWL WLxWL
-covmat_fiducial = covmat.dat
+covmat_cl = 100GHzx100GHz 100GHzx143GHz 100GHzxWL 143GHzx143GHz 143GHzxWL WLxWL
+covmat_fiducial = covmat_full.dat
 
 number_simulations = 500

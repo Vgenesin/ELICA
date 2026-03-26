@@ -1,4 +1,4 @@
 path: null
-dataset_file: "data/cross/params.dataset"
+dataset_file: "data/cross.dataset"
 map_separator: x
 l_max: 1000

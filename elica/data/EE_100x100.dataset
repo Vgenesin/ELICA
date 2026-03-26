@@ -1,4 +1,4 @@
-map_names = WL
+map_names = 100GHz
 map_fields = E
 fields_use = E
 
@@ -16,7 +16,7 @@ cl_fiducial_includes_noise = False
 cl_noise_file = cl_noise.dat
 offset_file = offset.dat
 
-covmat_cl = WLxWL
-covmat_fiducial = covmat.dat
+covmat_cl = 100GHzx100GHz
+covmat_fiducial = covmat_100.dat
 
 number_simulations = 500
