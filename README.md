@@ -1,5 +1,10 @@
 # ELiCA
 
+[![Documentation](https://readthedocs.org/projects/elica/badge/?version=latest)](https://elica.readthedocs.io/)
+[![Tests](https://github.com/Vgenesin/ELiCA/actions/workflows/tests.yml/badge.svg)](https://github.com/Vgenesin/ELiCA/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/Vgenesin/ELiCA/branch/main/graph/badge.svg)](https://codecov.io/gh/Vgenesin/ELiCA)
+[![Python](https://img.shields.io/badge/python-3.10--3.13-blue)](https://pypi.org/project/elica/)
+
 E-mode Likelihood for Cross-Analysis: an external [cobaya](https://cobaya.readthedocs.io/) likelihood package for CMB E-mode polarization, targeting constraints on the epoch of reionization.
 
 ## Installation
@@ -11,7 +16,7 @@ pip install elica
 Or from source:
 
 ```bash
-git clone https://github.com/Vgenesin/ELICA.git
+git clone https://github.com/Vgenesin/ELiCA.git
 cd ELICA
 uv sync
 ```
@@ -53,7 +58,7 @@ See `examples/` for a full sampling script.
 ## Development
 
 ```bash
-git clone https://github.com/Vgenesin/ELICA.git
+git clone https://github.com/Vgenesin/ELiCA.git
 cd ELICA
 uv sync --all-extras --dev
 pre-commit install
