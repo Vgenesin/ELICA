@@ -8,7 +8,7 @@ binned = False
 like_approx = HL
 
 cl_hat_file = cl_hat.dat
-cl_hat_includes_noise = False
+cl_hat_includes_noise = True
 
 cl_fiducial_file = cl_fiducial.dat
 cl_fiducial_includes_noise = False
