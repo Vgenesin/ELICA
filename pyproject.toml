@@ -28,7 +28,7 @@ dev = [
 include = ["elica*"]
 
 [tool.setuptools.package-data]
-elica = ["*.yaml", "*.bibtex", "data/*.pickle", "data/*.pkl"]
+elica = ["*.yaml", "*.bibtex", "data/**/*"]
 
 [tool.coverage.run]
 relative_files = true
