@@ -19,4 +19,4 @@ offset_file = offset.dat
 covmat_cl = 100GHzx100GHz 100GHzx143GHz 100GHzxWL 143GHzx143GHz 143GHzxWL WLxWL
 covmat_fiducial = covmat.dat
 
-number_simulations = 500
+number_simulations = 10000
