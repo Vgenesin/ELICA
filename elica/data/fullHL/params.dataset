@@ -1,5 +1,5 @@
 lmin=2
-lmax=30
+lmax=29
 number_simulations=500
 number_fields=3
 
