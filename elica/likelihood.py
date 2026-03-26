@@ -8,13 +8,16 @@ class _ElicaCMBlikes(CMBlikes):
 
     Extends CMBlikes with:
     - Offset: additive correction to data, noise, and fiducial
-    - gLoLLi transform: handles negative eigenvalues in the HL transform
+    - new ghl transform: handles negative eigenvalues in the HL transform
     - Sellentin-Heavens correction: accounts for finite simulation covariance
     """
 
     install_options = {}
 
     def init_params(self, ini):
+        """
+        Read number of simulations, then add offset to bandpowers, noise, and fiducial.
+        """
         self.nsims = ini.int("number_simulations")
         super().init_params(ini)
 
@@ -100,7 +103,6 @@ class _ElicaCMBlikes(CMBlikes):
             rot[:, i] /= root
         U.dot(rot.dot(U.T), rot)
         diag, rot = np.linalg.eigh(rot)
-        # gLoLLi: sign(x) * sign(|x|-1) * sqrt(2*(|x| - log(|x|) - 1))
         abs_diag = np.abs(diag)
         diag = (
             np.sign(diag)
