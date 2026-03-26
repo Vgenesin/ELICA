@@ -178,7 +178,8 @@ class _ElicaCMBlikes(CMBlikes):
 # Concrete likelihood classes (configured via .yaml + .dataset)
 
 
-class elica(_ElicaCMBlikes): ...
+class elica(_ElicaCMBlikes):
+    aliases = ["hybrid"]
 
 
 class cross(_ElicaCMBlikes): ...
