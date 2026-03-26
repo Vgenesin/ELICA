@@ -1,5 +1,4 @@
 path: null
-
-dataset_file: "data/WLxWL/params.dataset"
-
-dictionary_file: "data/WLxWL_dict.pickle"
+dataset_file: "data/EE_WLxWL.dataset"
+map_separator: x
+l_max: 1000

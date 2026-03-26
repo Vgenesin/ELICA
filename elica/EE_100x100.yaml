@@ -1,5 +1,4 @@
 path: null
-
-dataset_file: "data/100x100/params.dataset"
-
-dictionary_file: "data/100x100_dict.pickle"
+dataset_file: "data/EE_100x100.dataset"
+map_separator: x
+l_max: 1000

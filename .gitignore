@@ -163,6 +163,11 @@ cython_debug/
 # VS Code
 .vscode/
 
-# Ruff 
+# Ruff
 .ruff_cache/
-elica/data/WLxWL/notebook_esterno_likelihood_WLxWL.dat
+
+# Claude Code
+.claude/
+
+# MCMC chains
+chains/
